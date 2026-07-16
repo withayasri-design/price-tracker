@@ -6,6 +6,8 @@ namespace Agents;
 
 use PDO;
 use Throwable;
+use Modules\Scraping\ScrapingService;
+use Modules\Scraping\ScrapingException;
 
 /**
  * Scraper Agent: Fetches product prices from e-commerce platforms.
@@ -19,12 +21,14 @@ use Throwable;
 class ScraperAgent implements AgentInterface
 {
     private PDO $pdo;
+    private ScrapingService $scrapingService;
     private int $batchSize;
     private int $delayBetweenRequestsMs;
 
     public function __construct(PDO $pdo, int $batchSize = 50, int $delayBetweenRequestsMs = 3000)
     {
         $this->pdo = $pdo;
+        $this->scrapingService = new ScrapingService($pdo);
         $this->batchSize = $batchSize;
         $this->delayBetweenRequestsMs = $delayBetweenRequestsMs;
     }
@@ -203,19 +207,29 @@ class ScraperAgent implements AgentInterface
 
     /**
      * Call the platform-specific scraper.
-     * This is a placeholder - should delegate to modules/scraping/ScrapingService.
      */
     private function callPlatformScraper(array $product): ?array
     {
-        // TODO: Implement actual scraping logic
-        // For now, return null to indicate "not implemented"
-        //
-        // Example implementation:
-        // $scraperClass = $this->getPlatformAdapter($product['platform']);
-        // $scraper = new $scraperClass();
-        // return $scraper->scrape($product['product_url']);
+        // Check if platform is supported
+        if (!$this->scrapingService->isPlatformSupported($product['platform'])) {
+            return null;
+        }
 
-        return null;
+        try {
+            $scraped = $this->scrapingService->scrapeUrl($product['product_url'], $product['platform']);
+
+            return [
+                'name' => $scraped->name,
+                'price' => $scraped->price,
+                'original_price' => $scraped->originalPrice,
+                'stock_status' => $scraped->stockStatus,
+                'image_url' => $scraped->imageUrl,
+                'attributes' => $scraped->attributes,
+            ];
+        } catch (ScrapingException $e) {
+            // Log the error but don't throw - let the agent handle failures gracefully
+            return null;
+        }
     }
 
     /**
@@ -226,6 +240,7 @@ class ScraperAgent implements AgentInterface
         $stmt = $this->pdo->prepare("
             UPDATE tracked_products
             SET product_name = COALESCE(:name, product_name),
+                image_url = COALESCE(:image_url, image_url),
                 last_price = :price,
                 last_original_price = :original_price,
                 last_stock_status = :stock_status,
@@ -235,6 +250,7 @@ class ScraperAgent implements AgentInterface
         $stmt->execute([
             'product_id' => $productId,
             'name' => $data['name'],
+            'image_url' => $data['image_url'] ?? null,
             'price' => $data['price'],
             'original_price' => $data['original_price'],
             'stock_status' => $data['stock_status'],
