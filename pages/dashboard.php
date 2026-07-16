@@ -282,7 +282,7 @@ $eventTypeLabels = [
                 <div class="card">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-box me-2"></i>สินค้าที่ติดตาม</h5>
-                        <a href="#" class="btn btn-primary btn-sm">
+                        <a href="/pages/products.php" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>เพิ่มสินค้า
                         </a>
                     </div>
@@ -291,7 +291,7 @@ $eventTypeLabels = [
                             <div class="text-center py-5">
                                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-3">ยังไม่มีสินค้าที่ติดตาม</p>
-                                <a href="#" class="btn btn-primary">
+                                <a href="/pages/products.php" class="btn btn-primary">
                                     <i class="fas fa-plus me-1"></i>เพิ่มสินค้าแรก
                                 </a>
                             </div>
