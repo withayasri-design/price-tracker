@@ -249,8 +249,11 @@ $platformInfo = [
 
                                 <!-- Actions -->
                                 <div class="d-flex gap-2">
-                                    <a href="<?= htmlspecialchars($product['product_url']) ?>" target="_blank" class="btn btn-outline-primary btn-sm flex-grow-1">
-                                        <i class="fas fa-external-link-alt me-1"></i>ดูสินค้า
+                                    <a href="/pages/product_detail.php?id=<?= $product['tracking_id'] ?>" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                        <i class="fas fa-chart-line me-1"></i>ดูราคา
+                                    </a>
+                                    <a href="<?= htmlspecialchars($product['product_url']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm" title="ดูสินค้า">
+                                        <i class="fas fa-external-link-alt"></i>
                                     </a>
                                     <button class="btn btn-outline-secondary btn-sm" onclick="refreshProduct(<?= $product['tracking_id'] ?>)" title="รีเฟรช">
                                         <i class="fas fa-sync-alt"></i>

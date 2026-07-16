@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Agents;
 
 use Modules\Notification\LineNotifier;
+use Modules\Notification\EmailNotifier;
 use PDO;
 use Throwable;
 
@@ -22,6 +23,7 @@ class AlertDispatchAgent implements AgentInterface
 {
     private PDO $pdo;
     private ?LineNotifier $lineNotifier = null;
+    private ?EmailNotifier $emailNotifier = null;
     private int $batchDelaySeconds;
 
     public function __construct(PDO $pdo, int $batchDelaySeconds = 60)
@@ -29,8 +31,9 @@ class AlertDispatchAgent implements AgentInterface
         $this->pdo = $pdo;
         $this->batchDelaySeconds = $batchDelaySeconds;
 
-        // Initialize LINE notifier if configured
+        // Initialize notifiers
         $this->initLineNotifier();
+        $this->initEmailNotifier();
     }
 
     public function getName(): string
@@ -129,6 +132,20 @@ class AlertDispatchAgent implements AgentInterface
             if (!empty($config['channel_access_token'])) {
                 $this->lineNotifier = new LineNotifier($config['channel_access_token']);
             }
+        }
+    }
+
+    /**
+     * Initialize Email notifier from settings.
+     */
+    private function initEmailNotifier(): void
+    {
+        require_once __DIR__ . '/../modules/notification/EmailNotifier.php';
+
+        try {
+            $this->emailNotifier = EmailNotifier::fromSettings($this->pdo);
+        } catch (Throwable $e) {
+            // Email not configured, continue without it
         }
     }
 
@@ -326,27 +343,62 @@ class AlertDispatchAgent implements AgentInterface
 
     /**
      * Send email notification to user.
-     * Uses existing AlertService/PHPMailer infrastructure.
      */
     private function sendEmailNotification(string $email, string $name, array $events): bool
     {
-        // TODO: Integrate with existing AlertService/PHPMailer
-        // For now, log that email would be sent
+        if ($this->emailNotifier === null) {
+            return false;
+        }
 
-        $this->pdo->prepare("
-            INSERT INTO agent_logs (agent_type, log_level, message, context, created_at)
-            VALUES ('alert_dispatch', 'info', :message, :context, NOW())
-        ")->execute([
-            'message' => "Email notification queued for {$email}",
-            'context' => json_encode([
-                'email' => $email,
-                'name' => $name,
-                'event_count' => count($events),
-            ]),
-        ]);
+        try {
+            if (count($events) === 1) {
+                // Single product - send individual alert
+                $event = $events[0];
+                $response = $this->emailNotifier->sendPriceAlert(
+                    $email,
+                    $event['product_name'],
+                    $event['image_url'],
+                    $event['old_price'] ? (float) $event['old_price'] : null,
+                    (float) $event['new_price'],
+                    $event['product_url'],
+                    $event['event_type'],
+                    $event['platform']
+                );
+            } else {
+                // Multiple products - send digest
+                $alerts = array_map(fn($e) => [
+                    'product_name' => $e['product_name'],
+                    'image_url' => $e['image_url'],
+                    'old_price' => $e['old_price'] ? (float) $e['old_price'] : null,
+                    'new_price' => (float) $e['new_price'],
+                    'product_url' => $e['product_url'],
+                    'event_type' => $e['event_type'],
+                    'platform' => $e['platform'],
+                ], $events);
 
-        // Return true to mark as sent (actual sending via AlertService)
-        return true;
+                $response = $this->emailNotifier->sendPriceAlertDigest($email, $alerts);
+            }
+
+            if ($response['success']) {
+                $this->pdo->prepare("
+                    INSERT INTO agent_logs (agent_type, log_level, message, context, created_at)
+                    VALUES ('alert_dispatch', 'info', :message, :context, NOW())
+                ")->execute([
+                    'message' => "Email sent to {$email}",
+                    'context' => json_encode([
+                        'email' => $email,
+                        'name' => $name,
+                        'event_count' => count($events),
+                    ]),
+                ]);
+            }
+
+            return $response['success'] ?? false;
+
+        } catch (Throwable $e) {
+            $this->logError(0, "Email send failed: " . $e->getMessage());
+            return false;
+        }
     }
 
     /**

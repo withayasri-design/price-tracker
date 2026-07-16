@@ -35,6 +35,7 @@ require_once __DIR__ . '/../agents/AlertDispatchAgent.php';
 require_once __DIR__ . '/../modules/matching/SimilarityCalculator.php';
 require_once __DIR__ . '/../modules/matching/MasterProductService.php';
 require_once __DIR__ . '/../modules/notification/LineNotifier.php';
+require_once __DIR__ . '/../modules/notification/EmailNotifier.php';
 require_once __DIR__ . '/../modules/scraping/ScrapingException.php';
 require_once __DIR__ . '/../modules/scraping/ScrapedProduct.php';
 require_once __DIR__ . '/../modules/scraping/PlatformAdapterInterface.php';
