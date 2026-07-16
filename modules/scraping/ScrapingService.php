@@ -15,6 +15,10 @@ use PDO;
 use Modules\Scraping\Adapters\JibAdapter;
 use Modules\Scraping\Adapters\BananaAdapter;
 use Modules\Scraping\Adapters\AdviceAdapter;
+use Modules\Scraping\Adapters\GlobalHouseAdapter;
+use Modules\Scraping\Adapters\HomeProAdapter;
+use Modules\Scraping\Adapters\ThaiWatsaduAdapter;
+use Modules\Scraping\Adapters\PowerBuyAdapter;
 
 class ScrapingService
 {
@@ -34,10 +38,16 @@ class ScrapingService
      */
     private function registerDefaultAdapters(): void
     {
+        // IT/Electronics retailers
         $this->register(new JibAdapter());
         $this->register(new BananaAdapter());
         $this->register(new AdviceAdapter());
-        // TODO: Add more adapters as they're implemented
+        $this->register(new PowerBuyAdapter());
+
+        // Home improvement retailers
+        $this->register(new GlobalHouseAdapter());
+        $this->register(new HomeProAdapter());
+        $this->register(new ThaiWatsaduAdapter());
     }
 
     /**

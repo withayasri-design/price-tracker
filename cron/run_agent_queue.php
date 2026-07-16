@@ -43,6 +43,10 @@ require_once __DIR__ . '/../modules/scraping/BaseAdapter.php';
 require_once __DIR__ . '/../modules/scraping/adapters/JibAdapter.php';
 require_once __DIR__ . '/../modules/scraping/adapters/BananaAdapter.php';
 require_once __DIR__ . '/../modules/scraping/adapters/AdviceAdapter.php';
+require_once __DIR__ . '/../modules/scraping/adapters/GlobalHouseAdapter.php';
+require_once __DIR__ . '/../modules/scraping/adapters/HomeProAdapter.php';
+require_once __DIR__ . '/../modules/scraping/adapters/ThaiWatsaduAdapter.php';
+require_once __DIR__ . '/../modules/scraping/adapters/PowerBuyAdapter.php';
 require_once __DIR__ . '/../modules/scraping/ScrapingService.php';
 require_once __DIR__ . '/../config/line.php';
 
