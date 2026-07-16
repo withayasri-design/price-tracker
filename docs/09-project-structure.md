@@ -21,62 +21,65 @@ price-tracker/
 │   ├── PriceDiffAgent.php           # Agent 3: ตรวจจับ price drop/promotion
 │   └── AlertDispatchAgent.php       # Agent 4: ส่ง LINE + Email notifications
 ├── modules/
-│   ├── auth/
-│   │   └── AuthService.php          # logic ของ Module 02
-│   ├── products/
-│   │   ├── ProductService.php       # logic ของ Module 03
-│   │   └── UrlParser.php            # 3.2 URL Parser
 │   ├── scraping/
-│   │   ├── PlatformAdapterInterface.php
-│   │   ├── ScrapedProductData.php
-│   │   ├── ShopeeScraper.php
-│   │   ├── LazadaScraper.php
-│   │   ├── RateLimiter.php
-│   │   └── ScrapingService.php      # orchestrate flow ของ Module 04
-│   ├── history/
-│   │   └── HistoryService.php       # logic ของ Module 05
+│   │   ├── PlatformAdapterInterface.php  # Contract for platform adapters
+│   │   ├── BaseAdapter.php               # Common HTTP/parsing functionality
+│   │   ├── ScrapedProduct.php            # Data class for scraped results
+│   │   ├── ScrapingException.php         # Exception handling with retry logic
+│   │   ├── ScrapingService.php           # Orchestrates all adapters
+│   │   ├── UrlParser.php                 # URL parsing for all platforms
+│   │   └── adapters/
+│   │       ├── JibAdapter.php            # jib.co.th
+│   │       ├── BananaAdapter.php         # bananait.co.th
+│   │       ├── AdviceAdapter.php         # advice.co.th
+│   │       ├── GlobalHouseAdapter.php    # globalhouse.co.th
+│   │       ├── HomeProAdapter.php        # homepro.co.th
+│   │       ├── ThaiWatsaduAdapter.php    # thaiwatsadu.com
+│   │       └── PowerBuyAdapter.php       # powerbuy.co.th
+│   ├── tracking/
+│   │   └── TrackingService.php           # Product tracking CRUD & price history
 │   ├── notification/
-│   │   ├── AlertService.php         # logic ของ Module 06 (Threshold Checker ฯลฯ)
-│   │   ├── LineNotifier.php         # LINE Messaging API integration
-│   │   └── NotificationChannel.php  # Channel abstraction (email, line, dashboard)
-│   └── matching/                    # Cross-platform product matching
-│       ├── MatchingService.php      # Fuzzy matching orchestration
-│       ├── SimilarityCalculator.php # Trigram/Levenshtein algorithms
-│       └── MasterProductService.php # Master catalog CRUD
+│   │   ├── LineNotifier.php              # LINE Messaging API with Flex Messages
+│   │   └── EmailNotifier.php             # Email notifications (SMTP/sendmail)
+│   └── matching/                         # Cross-platform product matching
+│       ├── SimilarityCalculator.php      # Trigram/Levenshtein algorithms
+│       └── MasterProductService.php      # Master catalog CRUD
 ├── cron/
-│   ├── run_scraping_job.php         # entry point สำหรับ crontab (Module 04 - 4.4)
-│   └── run_agent_queue.php          # Agent queue processor (see agents/)
+│   ├── run_agent_queue.php          # Agent queue processor (every minute)
+│   └── run_scheduled_scrape.php     # Queue stale products for scraping (every 30 min)
 ├── api/
-│   ├── auth/
 │   ├── products/
-│   ├── scraping/
-│   ├── history/
-│   ├── notifications/
-│   │   └── line_webhook.php         # LINE webhook receiver
-│   ├── dashboard/
-│   ├── agents/                      # Agent management APIs
-│   │   ├── queue_status.php
-│   │   └── trigger_agent.php
-│   ├── matching/                    # Product matching APIs
-│   │   ├── suggestions.php
-│   │   ├── confirm_match.php
-│   │   └── unlink.php
-│   └── admin/
+│   │   ├── add.php                  # Add product tracking
+│   │   ├── list.php                 # List tracked products
+│   │   ├── delete.php               # Remove tracking
+│   │   ├── refresh.php              # Manual price refresh
+│   │   └── history.php              # Price history data
+│   ├── agents/
+│   │   ├── queue_status.php         # Queue statistics & monitoring
+│   │   └── trigger_agent.php        # Manual agent trigger
+│   ├── events/
+│   │   ├── list.php                 # List price events
+│   │   └── stats.php                # Event statistics
+│   ├── matching/
+│   │   ├── suggestions.php          # Get matching suggestions
+│   │   ├── confirm_match.php        # Confirm product match
+│   │   ├── unlink.php               # Unlink matched products
+│   │   └── comparison.php           # Cross-platform comparison data
+│   └── notifications/
+│       └── line_webhook.php         # LINE webhook receiver
 ├── pages/
-│   ├── login.php
-│   ├── register.php
-│   ├── dashboard.php
-│   ├── products.php                 # Tracking List (Module 03 - 3.5)
-│   ├── product_detail.php           # กราฟราคา + comparison (Module 05)
-│   ├── notifications.php
-│   ├── profile.php
+│   ├── login.php                    # User login
+│   ├── register.php                 # User registration
+│   ├── logout.php                   # Logout handler
+│   ├── dashboard.php                # Main dashboard with price events
+│   ├── products.php                 # Product tracking management
+│   ├── product_detail.php           # Price history chart (Chart.js)
+│   ├── compare.php                  # Cross-platform price comparison
+│   ├── profile.php                  # User profile & notification settings
 │   ├── line_connect.php             # LINE account linking (OAuth)
 │   └── admin/
-│       ├── dashboard.php
-│       ├── users.php
-│       ├── scraping_monitor.php
-│       ├── settings.php
-│       ├── agent_monitor.php        # Agent queue status dashboard
+│       ├── settings.php             # System settings (scraping, email, LINE, agents)
+│       ├── agent_monitor.php        # Agent queue status & logs
 │       └── master_products.php      # Review unmatched products
 ├── assets/
 │   ├── css/

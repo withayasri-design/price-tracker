@@ -58,27 +58,59 @@ price-tracker/
 │   ├── PriceDiffAgent.php       # Detects price events
 │   └── AlertDispatchAgent.php   # LINE + Email notifications
 ├── modules/
+│   ├── scraping/
+│   │   ├── PlatformAdapterInterface.php
+│   │   ├── BaseAdapter.php           # Common HTTP/parsing
+│   │   ├── ScrapedProduct.php        # Data class
+│   │   ├── ScrapingException.php     # Exception handling
+│   │   ├── ScrapingService.php       # Orchestrator
+│   │   └── adapters/
+│   │       ├── JibAdapter.php
+│   │       ├── BananaAdapter.php
+│   │       ├── AdviceAdapter.php
+│   │       ├── GlobalHouseAdapter.php
+│   │       ├── HomeProAdapter.php
+│   │       ├── ThaiWatsaduAdapter.php
+│   │       └── PowerBuyAdapter.php
 │   ├── matching/
 │   │   ├── SimilarityCalculator.php  # Trigram/Levenshtein
 │   │   └── MasterProductService.php  # Master product catalog
+│   ├── tracking/
+│   │   └── TrackingService.php       # Product tracking logic
 │   └── notification/
-│       └── LineNotifier.php     # LINE Messaging API
+│       ├── LineNotifier.php          # LINE Messaging API
+│       └── EmailNotifier.php         # Email notifications
 ├── pages/
 │   ├── login.php                # User login
 │   ├── register.php             # User registration
 │   ├── logout.php               # Logout handler
-│   ├── dashboard.php            # User dashboard
+│   ├── dashboard.php            # User dashboard with price events
 │   ├── profile.php              # User profile & settings
+│   ├── products.php             # Product management
+│   ├── product_detail.php       # Price history chart
+│   ├── compare.php              # Cross-platform comparison
 │   ├── line_connect.php         # LINE account linking
 │   └── admin/
-│       └── master_products.php  # Admin: review unmatched products
+│       ├── master_products.php  # Review unmatched products
+│       ├── agent_monitor.php    # Agent queue monitoring
+│       └── settings.php         # System settings
 ├── api/
+│   ├── products/
+│   │   ├── add.php              # Add product tracking
+│   │   ├── list.php             # List tracked products
+│   │   ├── delete.php           # Remove tracking
+│   │   ├── refresh.php          # Manual price refresh
+│   │   └── history.php          # Price history data
+│   ├── agents/
+│   │   ├── queue_status.php     # Queue statistics
+│   │   └── trigger_agent.php    # Manual agent trigger
 │   ├── events/                  # Price events API
 │   ├── matching/                # Cross-platform matching API
 │   └── notifications/
 │       └── line_webhook.php     # LINE webhook receiver
 ├── cron/
-│   └── run_agent_queue.php      # Agent queue processor
+│   ├── run_agent_queue.php      # Agent queue processor
+│   └── run_scheduled_scrape.php # Scheduled scraping
 ├── database/
 │   └── schema.sql               # Full database schema
 └── docs/                        # Specification files
@@ -169,18 +201,27 @@ Before implementing any module, read its spec file in `docs/`:
 
 ## Platform Implementation Status
 
-| Platform | Status | Notes |
-|----------|--------|-------|
-| JIB | Ready | Server-rendered, straightforward |
-| Banana IT | Ready | SSR despite Nuxt.js |
-| Advice | Ready | Detail pages SSR, product ID from HTML |
-| Global House | Needs inspection | Some prices load via JS |
-| Shopee/Lazada/TikTok | Not inspected | SPA + anti-bot, requires network inspection |
+| Platform | Status | Adapter |
+|----------|--------|---------|
+| JIB | Ready | `JibAdapter.php` |
+| Banana IT | Ready | `BananaAdapter.php` |
+| Advice | Ready | `AdviceAdapter.php` |
+| Power Buy | Ready | `PowerBuyAdapter.php` |
+| Global House | Ready | `GlobalHouseAdapter.php` |
+| HomePro | Ready | `HomeProAdapter.php` |
+| Thai Watsadu | Ready | `ThaiWatsaduAdapter.php` |
+| Shopee | Not implemented | SPA + anti-bot, needs API/headless |
+| Lazada | Not implemented | SPA + anti-bot, needs API/headless |
+| TikTok Shop | Not implemented | SPA + anti-bot, needs API/headless |
 
-## Development Phases
+## Development Status
 
-1. Database schema + Auth + Project skeleton
-2. Product Tracking (Add/List/Threshold)
-3. Scraping Engine - start with JIB/Banana/Advice (easiest)
-4. Price History + Alerts
-5. Dashboard & Reporting
+- [x] Database schema + Auth + Project skeleton
+- [x] Product Tracking (Add/List/Threshold)
+- [x] Scraping Engine (7 platform adapters)
+- [x] Price History + Charts
+- [x] Agent Pipeline (Scraper → DataCleaning → PriceDiff → AlertDispatch)
+- [x] LINE + Email Notifications
+- [x] Cross-platform Price Comparison
+- [x] Admin Dashboard (Settings, Agent Monitor, Master Products)
+- [ ] Affiliate Links (Post-MVP)
