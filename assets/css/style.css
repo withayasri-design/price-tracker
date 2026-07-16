@@ -1,0 +1,237 @@
+/**
+ * Price Tracker Custom Styles
+ * Extends Bootstrap 5.3 with custom components
+ */
+
+/* CSS Variables */
+:root {
+    --pt-primary: #667eea;
+    --pt-secondary: #764ba2;
+    --pt-success: #28a745;
+    --pt-danger: #e53935;
+    --pt-warning: #ffc107;
+    --pt-gradient: linear-gradient(135deg, var(--pt-primary) 0%, var(--pt-secondary) 100%);
+}
+
+/* Global */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Product Cards */
+.product-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.product-img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.product-img-lg {
+    max-width: 300px;
+    max-height: 300px;
+    object-fit: contain;
+}
+
+/* Pricing */
+.price-current {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--pt-danger);
+}
+
+.price-original {
+    text-decoration: line-through;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.discount-badge {
+    background: #ff5722;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Stats Cards */
+.stat-card {
+    border-left: 4px solid;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateX(4px);
+}
+
+.stat-card.primary { border-color: var(--pt-primary); }
+.stat-card.success { border-color: var(--pt-success); }
+.stat-card.warning { border-color: var(--pt-warning); }
+.stat-card.danger { border-color: var(--pt-danger); }
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Platform Badges */
+.platform-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.platform-shopee { background: #EE4D2D; color: white; }
+.platform-lazada { background: #0F146D; color: white; }
+.platform-tiktok { background: #000000; color: white; }
+.platform-jib { background: #FF6600; color: white; }
+.platform-banana { background: #28a745; color: white; }
+.platform-advice { background: #17a2b8; color: white; }
+.platform-globalhouse { background: #008000; color: white; }
+.platform-homepro { background: #FF8C00; color: white; }
+.platform-thaiwatsadu { background: #0066CC; color: white; }
+.platform-powerbuy { background: #CC0000; color: white; }
+
+/* Event Types */
+.event-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.event-price_drop { background: #d4edda; color: #155724; }
+.event-price_increase { background: #f8d7da; color: #721c24; }
+.event-flash_sale { background: #fff3cd; color: #856404; }
+.event-lowest_ever { background: #e2d5f1; color: #5a2d82; }
+.event-back_in_stock { background: #d1ecf1; color: #0c5460; }
+
+/* Gradient Header */
+.gradient-header {
+    background: var(--pt-gradient);
+    color: white;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+/* Charts */
+.chart-container {
+    position: relative;
+    height: 300px;
+}
+
+/* Tables */
+.table-hover tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+/* Scrollable containers */
+.scrollable-list {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Loading spinner */
+.spinner-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255,255,255,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+/* Toast notifications */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+/* Empty state */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    opacity: 0.5;
+}
+
+/* Comparison best price */
+.best-price {
+    border: 2px solid var(--pt-success) !important;
+    position: relative;
+}
+
+.best-price::before {
+    content: 'ราคาต่ำสุด';
+    position: absolute;
+    top: -12px;
+    left: 12px;
+    background: var(--pt-success);
+    color: white;
+    padding: 2px 12px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+/* Savings badge */
+.savings-badge {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .product-img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .gradient-header {
+        padding: 20px;
+    }
+}
