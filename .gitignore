@@ -1,0 +1,74 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+/vendor/
+composer.lock
+
+# IDE
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+/logs/
+
+# Cache
+/cache/
+*.cache
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# Uploads (user content)
+/uploads/
+
+# Build artifacts
+/build/
+/dist/
+
+# Test coverage
+/coverage/
+.phpunit.result.cache
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Backup files
+*.bak
+*.backup
+
+# Local configuration
+/.claude/
+*.local.json
+
+# Database dumps
+*.sql.gz
+/database/backups/
+
+# Session files
+/sessions/
+
+# PHPMailer temp
+/temp/
