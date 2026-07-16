@@ -195,6 +195,11 @@ $eventTypeLabels = [
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/pages/compare.php">
+                            <i class="fas fa-balance-scale me-1"></i>เปรียบเทียบ
+                        </a>
+                    </li>
                     <?php if (Auth::isAdmin()): ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/pages/admin/master_products.php">
