@@ -14,17 +14,18 @@ Multi-platform price tracking system that monitors product prices across Thai e-
 - **UI:** Bootstrap 5.3 + Font Awesome 6 + Chart.js
 - **Email:** PHPMailer (SMTP)
 - **Auth:** PHP native sessions + password_hash()/password_verify()
+- **LINE:** LINE Messaging API with Flex Messages
 
 ## Commands
 
 ```bash
-# Install PHP dependencies
-composer install
-
 # Set up database
 mysql -u root -p < database/schema.sql
 
-# Run development server
+# Copy and configure environment
+cp .env.example .env
+
+# Run development server (XAMPP or PHP built-in)
 php -S localhost:8000
 
 # Cron job (add to crontab for scheduled scraping)
@@ -34,15 +35,53 @@ php -S localhost:8000
 * * * * * php /path/to/cron/run_agent_queue.php
 ```
 
-## Architecture
+## Project Structure
 
 ```
-modules/           Pure business logic (no HTTP concerns, unit testable)
-api/               Thin HTTP layer (validate → call modules → JSON response)
-pages/             UI pages (Auth guard → render HTML → AJAX to api/)
-core/              Shared utilities (Database, Auth, CSRF, Queue)
-agents/            Orchestration layer for pipeline processing
-cron/              Cron entry points (scraping + agent queue)
+price-tracker/
+├── index.php                    # Landing page
+├── .env.example                 # Environment template
+├── config/
+│   ├── database.php             # PDO connection with .env loading
+│   └── line.php                 # LINE API configuration
+├── core/
+│   ├── Auth.php                 # Session-based authentication
+│   ├── Csrf.php                 # CSRF token handling
+│   ├── Database.php             # PDO wrapper with helpers
+│   └── Queue.php                # DB-backed job queue
+├── agents/
+│   ├── AgentInterface.php       # Contract for all agents
+│   ├── AgentResult.php          # Agent execution result
+│   ├── AgentRunner.php          # Queue processor
+│   ├── ScraperAgent.php         # Fetches prices
+│   ├── DataCleaningAgent.php    # Cross-platform matching
+│   ├── PriceDiffAgent.php       # Detects price events
+│   └── AlertDispatchAgent.php   # LINE + Email notifications
+├── modules/
+│   ├── matching/
+│   │   ├── SimilarityCalculator.php  # Trigram/Levenshtein
+│   │   └── MasterProductService.php  # Master product catalog
+│   └── notification/
+│       └── LineNotifier.php     # LINE Messaging API
+├── pages/
+│   ├── login.php                # User login
+│   ├── register.php             # User registration
+│   ├── logout.php               # Logout handler
+│   ├── dashboard.php            # User dashboard
+│   ├── profile.php              # User profile & settings
+│   ├── line_connect.php         # LINE account linking
+│   └── admin/
+│       └── master_products.php  # Admin: review unmatched products
+├── api/
+│   ├── events/                  # Price events API
+│   ├── matching/                # Cross-platform matching API
+│   └── notifications/
+│       └── line_webhook.php     # LINE webhook receiver
+├── cron/
+│   └── run_agent_queue.php      # Agent queue processor
+├── database/
+│   └── schema.sql               # Full database schema
+└── docs/                        # Specification files
 ```
 
 **Key Patterns:**
@@ -61,12 +100,52 @@ raw_price_snapshots  master_products   price_events    LINE + Email
 - **Dual notifications:** Both LINE OA and Email supported; users choose in profile
 - **Coexistence:** Direct service calls and agent pipeline work together
 
+## Core Classes Usage
+
+### Auth (core/Auth.php)
+```php
+use Core\Auth;
+
+Auth::requireLogin();                    // Redirect if not logged in
+Auth::requireAdmin();                    // Require admin role
+Auth::check();                           // Returns bool
+Auth::userId();                          // Returns int|null
+Auth::login($id, $email, $role, $name);  // Start session
+Auth::logout();                          // Destroy session
+Auth::hashPassword($password);           // Returns bcrypt hash
+Auth::verifyPassword($pwd, $hash);       // Returns bool
+Auth::flash('key', 'message');           // Set flash message
+Auth::getFlash('key');                   // Get and clear flash
+```
+
+### Csrf (core/Csrf.php)
+```php
+use Core\Csrf;
+
+$token = Csrf::generate();               // Generate new token
+Csrf::verify($_POST['csrf_token']);      // Throws on invalid
+Csrf::check($token);                     // Returns bool (no throw)
+echo Csrf::field();                      // <input type="hidden"...>
+echo Csrf::meta();                       // <meta name="csrf-token"...>
+```
+
+### Queue (core/Queue.php)
+```php
+use Core\Queue;
+
+$queue = new Queue($pdo);
+$jobId = $queue->push('scraper', ['product_id' => 123]);
+$job = $queue->pop('scraper');           // Get next pending job
+$queue->complete($jobId);                // Mark as completed
+$queue->fail($jobId, 'Error message');   // Mark as failed (with retry)
+```
+
 ## Critical Rules
 
 1. **All SQL queries MUST use PDO Prepared Statements** - never concatenate strings into SQL
-2. **Check `01-database-schema.md` before creating/modifying tables** - it's the Source of Truth
+2. **Check `docs/01-database-schema.md` before creating/modifying tables** - it's the Source of Truth
 3. **API responses are always JSON:** `{ "success": true|false, "data": {...}, "message": "..." }`
-4. **All forms require CSRF tokens**
+4. **All forms require CSRF tokens** - use `Csrf::field()` in forms
 5. **Never deploy scrapers with TODO comments** - verify platform compatibility first
 6. **Comments/variables in English, UI text in Thai**
 
