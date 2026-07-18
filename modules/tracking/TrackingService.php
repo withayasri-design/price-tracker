@@ -12,6 +12,7 @@ namespace Modules\Tracking;
 
 use PDO;
 use Modules\Scraping\UrlParser;
+use Modules\Scraping\ScrapingService;
 
 class TrackingService
 {
@@ -129,8 +130,15 @@ class TrackingService
             $trackingId = (int) $this->pdo->lastInsertId();
         }
 
-        // Queue scraping job for this product
-        $this->queueScrapeJob($productId);
+        // Scrape immediately for new products
+        try {
+            require_once __DIR__ . '/../scraping/ScrapingService.php';
+            $scrapingService = new ScrapingService($this->pdo);
+            $scrapingService->scrapeAndSave($productId, 'user_add');
+        } catch (\Throwable $e) {
+            // Log error but don't fail the add operation
+            // The product will be scraped by cron later
+        }
 
         return [
             'tracking_id' => $trackingId,

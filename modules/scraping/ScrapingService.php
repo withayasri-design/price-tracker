@@ -11,6 +11,19 @@ declare(strict_types=1);
 
 namespace Modules\Scraping;
 
+// Load dependencies
+require_once __DIR__ . '/PlatformAdapterInterface.php';
+require_once __DIR__ . '/ScrapedProduct.php';
+require_once __DIR__ . '/ScrapingException.php';
+require_once __DIR__ . '/BaseAdapter.php';
+require_once __DIR__ . '/adapters/JibAdapter.php';
+require_once __DIR__ . '/adapters/BananaAdapter.php';
+require_once __DIR__ . '/adapters/AdviceAdapter.php';
+require_once __DIR__ . '/adapters/GlobalHouseAdapter.php';
+require_once __DIR__ . '/adapters/HomeProAdapter.php';
+require_once __DIR__ . '/adapters/ThaiWatsaduAdapter.php';
+require_once __DIR__ . '/adapters/PowerBuyAdapter.php';
+
 use PDO;
 use Modules\Scraping\Adapters\JibAdapter;
 use Modules\Scraping\Adapters\BananaAdapter;
