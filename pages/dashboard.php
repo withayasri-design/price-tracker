@@ -329,7 +329,7 @@ $eventTypeLabels = [
                                                     </div>
                                                     <div class="mt-1 small text-muted">
                                                         <?php if ($product['target_price']): ?>
-                                                            <i class="fas fa-bullseye me-1"></i>เป้าหมาย: <?= number_format($product['target_price'], 2) ?> บาท
+                                                            <i class="fas fa-bullseye me-1"></i>เป้าหมาย: <?= number_format((float)$product['target_price'], 2) ?> บาท
                                                         <?php elseif ($product['target_discount_percent']): ?>
                                                             <i class="fas fa-percent me-1"></i>เป้าหมาย: ลด <?= $product['target_discount_percent'] ?>%
                                                         <?php endif; ?>
@@ -337,10 +337,10 @@ $eventTypeLabels = [
                                                 </td>
                                                 <td class="text-end" style="width: 150px;">
                                                     <div class="price-current">
-                                                        <?= number_format($product['last_price'] ?? 0, 2) ?> บาท
+                                                        <?= number_format((float)($product['last_price'] ?? 0), 2) ?> บาท
                                                     </div>
-                                                    <?php if ($product['last_original_price'] && $product['last_original_price'] > $product['last_price']): ?>
-                                                        <div class="price-original"><?= number_format($product['last_original_price'], 2) ?></div>
+                                                    <?php if ($product['last_original_price'] && (float)$product['last_original_price'] > (float)$product['last_price']): ?>
+                                                        <div class="price-original"><?= number_format((float)$product['last_original_price'], 2) ?></div>
                                                         <span class="discount-badge">-<?= $product['discount_percent'] ?>%</span>
                                                     <?php endif; ?>
                                                 </td>
@@ -390,7 +390,7 @@ $eventTypeLabels = [
                                                 </div>
                                                 <div class="small text-muted">
                                                     <?php if ($event['old_price'] && $event['new_price']): ?>
-                                                        <?= number_format($event['old_price'], 0) ?> -> <?= number_format($event['new_price'], 0) ?> บาท
+                                                        <?= number_format((float)$event['old_price'], 0) ?> -> <?= number_format((float)$event['new_price'], 0) ?> บาท
                                                     <?php endif; ?>
                                                     <span class="ms-1"><?= date('d/m H:i', strtotime($event['created_at'])) ?></span>
                                                 </div>

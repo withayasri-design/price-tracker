@@ -203,10 +203,10 @@ $platformInfo = [
                                 <div class="mb-3">
                                     <?php if ($product['last_price']): ?>
                                         <div class="price-current">
-                                            ฿<?= number_format($product['last_price'], 2) ?>
+                                            ฿<?= number_format((float)$product['last_price'], 2) ?>
                                         </div>
-                                        <?php if ($product['last_original_price'] && $product['last_original_price'] > $product['last_price']): ?>
-                                            <span class="price-original">฿<?= number_format($product['last_original_price'], 2) ?></span>
+                                        <?php if ($product['last_original_price'] && (float)$product['last_original_price'] > (float)$product['last_price']): ?>
+                                            <span class="price-original">฿<?= number_format((float)$product['last_original_price'], 2) ?></span>
                                             <span class="discount-badge ms-1">-<?= $product['current_discount_percent'] ?>%</span>
                                         <?php endif; ?>
                                     <?php else: ?>
@@ -219,7 +219,7 @@ $platformInfo = [
                                     <div class="mb-3">
                                         <?php if ($product['target_price']): ?>
                                             <span class="target-badge">
-                                                <i class="fas fa-bullseye me-1"></i>เป้า ฿<?= number_format($product['target_price'], 2) ?>
+                                                <i class="fas fa-bullseye me-1"></i>เป้า ฿<?= number_format((float)$product['target_price'], 2) ?>
                                             </span>
                                         <?php endif; ?>
                                         <?php if ($product['target_discount_percent']): ?>

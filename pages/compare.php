@@ -214,15 +214,15 @@ $platformInfo = [
                     <div class="mt-3 p-3 bg-white bg-opacity-10 rounded">
                         <div class="row text-center">
                             <div class="col-4">
-                                <div class="h5 mb-0">฿<?= number_format($minPrice, 0) ?></div>
+                                <div class="h5 mb-0">฿<?= number_format((float)$minPrice, 0) ?></div>
                                 <small class="opacity-75">ราคาต่ำสุด</small>
                             </div>
                             <div class="col-4">
-                                <div class="h5 mb-0">฿<?= number_format($maxPrice, 0) ?></div>
+                                <div class="h5 mb-0">฿<?= number_format((float)$maxPrice, 0) ?></div>
                                 <small class="opacity-75">ราคาสูงสุด</small>
                             </div>
                             <div class="col-4">
-                                <div class="h5 mb-0 text-warning">฿<?= number_format($savings, 0) ?></div>
+                                <div class="h5 mb-0 text-warning">฿<?= number_format((float)$savings, 0) ?></div>
                                 <small class="opacity-75">ประหยัดได้</small>
                             </div>
                         </div>
@@ -268,9 +268,9 @@ $platformInfo = [
                                 </p>
 
                                 <div class="text-center mb-3">
-                                    <div class="price-current">฿<?= number_format($product['last_price'], 0) ?></div>
-                                    <?php if ($product['last_original_price'] && $product['last_original_price'] > $product['last_price']): ?>
-                                        <div class="price-original">฿<?= number_format($product['last_original_price'], 0) ?></div>
+                                    <div class="price-current">฿<?= number_format((float)$product['last_price'], 0) ?></div>
+                                    <?php if ($product['last_original_price'] && (float)$product['last_original_price'] > (float)$product['last_price']): ?>
+                                        <div class="price-original">฿<?= number_format((float)$product['last_original_price'], 0) ?></div>
                                         <span class="badge bg-danger">ลด <?= $product['discount_percent'] ?>%</span>
                                     <?php endif; ?>
                                 </div>
@@ -278,7 +278,7 @@ $platformInfo = [
                                 <?php if ($isBestPrice && count($comparisonProducts) > 1): ?>
                                     <div class="text-center mb-3">
                                         <span class="savings-badge">
-                                            <i class="fas fa-piggy-bank me-1"></i>ประหยัด ฿<?= number_format($savings, 0) ?>
+                                            <i class="fas fa-piggy-bank me-1"></i>ประหยัด ฿<?= number_format((float)$savings, 0) ?>
                                         </span>
                                     </div>
                                 <?php endif; ?>
@@ -334,18 +334,18 @@ $platformInfo = [
                                     </div>
                                     <div class="row text-center">
                                         <div class="col-6">
-                                            <div class="text-success fw-bold">฿<?= number_format($master['min_price'], 0) ?></div>
+                                            <div class="text-success fw-bold">฿<?= number_format((float)$master['min_price'], 0) ?></div>
                                             <small class="text-muted">ต่ำสุด</small>
                                         </div>
                                         <div class="col-6">
-                                            <div class="text-danger fw-bold">฿<?= number_format($master['max_price'], 0) ?></div>
+                                            <div class="text-danger fw-bold">฿<?= number_format((float)$master['max_price'], 0) ?></div>
                                             <small class="text-muted">สูงสุด</small>
                                         </div>
                                     </div>
-                                    <?php if ($master['max_price'] > $master['min_price']): ?>
+                                    <?php if ((float)$master['max_price'] > (float)$master['min_price']): ?>
                                         <div class="text-center mt-2">
                                             <span class="badge bg-warning text-dark">
-                                                ประหยัดได้ ฿<?= number_format($master['max_price'] - $master['min_price'], 0) ?>
+                                                ประหยัดได้ ฿<?= number_format((float)$master['max_price'] - (float)$master['min_price'], 0) ?>
                                             </span>
                                         </div>
                                     <?php endif; ?>

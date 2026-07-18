@@ -165,11 +165,11 @@ foreach ($history as $record) {
                         <!-- Current Price -->
                         <div class="mb-3">
                             <?php if ($tracking['last_price']): ?>
-                                <div class="price-current">฿<?= number_format($tracking['last_price'], 2) ?></div>
-                                <?php if ($tracking['last_original_price'] && $tracking['last_original_price'] > $tracking['last_price']):
-                                    $discount = round((1 - $tracking['last_price'] / $tracking['last_original_price']) * 100, 1);
+                                <div class="price-current">฿<?= number_format((float)$tracking['last_price'], 2) ?></div>
+                                <?php if ($tracking['last_original_price'] && (float)$tracking['last_original_price'] > (float)$tracking['last_price']):
+                                    $discount = round((1 - (float)$tracking['last_price'] / (float)$tracking['last_original_price']) * 100, 1);
                                 ?>
-                                    <div class="price-original">฿<?= number_format($tracking['last_original_price'], 2) ?></div>
+                                    <div class="price-original">฿<?= number_format((float)$tracking['last_original_price'], 2) ?></div>
                                     <span class="badge bg-danger">ลด <?= $discount ?>%</span>
                                 <?php endif; ?>
                             <?php else: ?>
@@ -182,7 +182,7 @@ foreach ($history as $record) {
                             <div class="alert alert-info py-2 small">
                                 <i class="fas fa-bullseye me-1"></i>
                                 <?php if ($tracking['target_price']): ?>
-                                    เป้าหมาย: ฿<?= number_format($tracking['target_price'], 2) ?>
+                                    เป้าหมาย: ฿<?= number_format((float)$tracking['target_price'], 2) ?>
                                 <?php else: ?>
                                     เป้าหมาย: ลด <?= $tracking['target_discount_percent'] ?>%
                                 <?php endif; ?>
@@ -215,7 +215,7 @@ foreach ($history as $record) {
                     <div class="col-6 col-md-3 mb-3">
                         <div class="card stat-card">
                             <div class="stat-value text-success">
-                                <?= $stats['min_price'] ? '฿' . number_format($stats['min_price'], 0) : '-' ?>
+                                <?= $stats['min_price'] ? '฿' . number_format((float)$stats['min_price'], 0) : '-' ?>
                             </div>
                             <div class="stat-label">ราคาต่ำสุด</div>
                         </div>
@@ -223,7 +223,7 @@ foreach ($history as $record) {
                     <div class="col-6 col-md-3 mb-3">
                         <div class="card stat-card">
                             <div class="stat-value text-danger">
-                                <?= $stats['max_price'] ? '฿' . number_format($stats['max_price'], 0) : '-' ?>
+                                <?= $stats['max_price'] ? '฿' . number_format((float)$stats['max_price'], 0) : '-' ?>
                             </div>
                             <div class="stat-label">ราคาสูงสุด</div>
                         </div>
@@ -231,7 +231,7 @@ foreach ($history as $record) {
                     <div class="col-6 col-md-3 mb-3">
                         <div class="card stat-card">
                             <div class="stat-value text-primary">
-                                <?= $stats['avg_price'] ? '฿' . number_format($stats['avg_price'], 0) : '-' ?>
+                                <?= $stats['avg_price'] ? '฿' . number_format((float)$stats['avg_price'], 0) : '-' ?>
                             </div>
                             <div class="stat-label">ราคาเฉลี่ย</div>
                         </div>
@@ -293,9 +293,9 @@ foreach ($history as $record) {
                                         <?php foreach (array_reverse($history) as $record): ?>
                                             <tr>
                                                 <td><?= date('d/m/Y H:i', strtotime($record['scraped_at'])) ?></td>
-                                                <td class="text-end fw-bold">฿<?= number_format($record['price'], 2) ?></td>
+                                                <td class="text-end fw-bold">฿<?= number_format((float)$record['price'], 2) ?></td>
                                                 <td class="text-end text-muted">
-                                                    <?= $record['original_price'] ? '฿' . number_format($record['original_price'], 2) : '-' ?>
+                                                    <?= $record['original_price'] ? '฿' . number_format((float)$record['original_price'], 2) : '-' ?>
                                                 </td>
                                                 <td class="text-end">
                                                     <?php if ($record['discount_percent'] && $record['discount_percent'] > 0): ?>
