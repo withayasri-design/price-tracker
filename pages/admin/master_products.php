@@ -400,7 +400,7 @@ $csrfToken = Csrf::generate();
                 payload.master_product_id = parseInt(selectedMasterProductId);
             }
 
-            fetch('/api/matching/confirm_match.php', {
+            fetch('../../api/matching/confirm_match.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

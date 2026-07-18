@@ -27,7 +27,7 @@ $userName = Auth::fullName();
 $trackingId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
 
 if ($trackingId <= 0) {
-    header('Location: /pages/products.php');
+    header('Location: products.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ $service = new TrackingService($pdo);
 // Get tracking details
 $tracking = $service->getTracking($userId, $trackingId);
 if (!$tracking) {
-    header('Location: /pages/products.php');
+    header('Location: products.php');
     exit;
 }
 
@@ -386,7 +386,7 @@ foreach ($history as $record) {
         // Refresh product
         async function refreshProduct() {
             try {
-                const response = await fetch('/api/products/refresh.php', {
+                const response = await fetch('../api/products/refresh.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({

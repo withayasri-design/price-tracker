@@ -14,5 +14,5 @@ use Core\Auth;
 
 Auth::logout();
 
-header('Location: /pages/login.php');
+header('Location: login.php');
 exit;

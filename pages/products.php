@@ -350,7 +350,7 @@ $platformInfo = [
             formData.append('csrf_token', csrfToken);
 
             try {
-                const response = await fetch('/api/products/add.php', {
+                const response = await fetch('../api/products/add.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -374,7 +374,7 @@ $platformInfo = [
         // Refresh product
         async function refreshProduct(trackingId) {
             try {
-                const response = await fetch('/api/products/refresh.php', {
+                const response = await fetch('../api/products/refresh.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tracking_id: trackingId, csrf_token: csrfToken })
@@ -391,7 +391,7 @@ $platformInfo = [
             if (!confirm('ต้องการหยุดติดตามสินค้านี้หรือไม่?')) return;
 
             try {
-                const response = await fetch('/api/products/delete.php', {
+                const response = await fetch('../api/products/delete.php', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ tracking_id: trackingId, csrf_token: csrfToken })

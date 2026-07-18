@@ -32,7 +32,7 @@ $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$user) {
     Auth::logout();
-    header('Location: /pages/login.php');
+    header('Location: login.php');
     exit;
 }
 

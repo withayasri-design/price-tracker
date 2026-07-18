@@ -17,7 +17,7 @@ use Core\Csrf;
 
 // Redirect if already logged in
 if (Auth::check()) {
-    header('Location: /pages/dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 

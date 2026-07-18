@@ -17,7 +17,7 @@ use Core\Csrf;
 
 // Redirect if already logged in
 if (Auth::check()) {
-    header('Location: /pages/dashboard.php');
+    header('Location: dashboard.php');
     exit;
 }
 
@@ -92,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         Auth::login($userId, $formData['email'], 'user', $formData['full_name']);
 
         Auth::flash('success', 'ยินดีต้อนรับ! สมัครสมาชิกสำเร็จแล้ว');
-        header('Location: /pages/dashboard.php');
+        header('Location: dashboard.php');
         exit;
 
     } catch (Exception $e) {
