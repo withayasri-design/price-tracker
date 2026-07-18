@@ -1,0 +1,644 @@
+openapi: 3.0.3
+info:
+  title: Price Tracker API
+  description: |
+    REST API for the Price Tracker multi-platform price monitoring system.
+
+    ## Authentication
+    Most endpoints require session-based authentication. Login via `/pages/login.php`
+    to obtain a session cookie, then include it in subsequent requests.
+
+    ## Rate Limiting
+    API endpoints are rate-limited per platform to avoid overloading target websites.
+    Check `system_settings` for current limits.
+  version: 1.0.0
+  contact:
+    name: Price Tracker Support
+    url: https://github.com/withayasri-design/price-tracker
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost/price-tracker/api
+    description: Local development
+  - url: http://localhost:8080/api
+    description: Docker development
+
+tags:
+  - name: Products
+    description: Product tracking operations
+  - name: Events
+    description: Price change events
+  - name: Agents
+    description: Agent pipeline management
+  - name: Notifications
+    description: LINE webhook and notifications
+  - name: Health
+    description: System health monitoring
+
+paths:
+  /health.php:
+    get:
+      tags:
+        - Health
+      summary: System health check
+      description: Returns health status of all system components
+      operationId: getHealth
+      responses:
+        '200':
+          description: All systems healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '503':
+          description: One or more systems degraded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+
+  /products/list.php:
+    get:
+      tags:
+        - Products
+      summary: List tracked products
+      description: Returns paginated list of products tracked by the current user
+      operationId: listProducts
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 100
+        - name: platform
+          in: query
+          schema:
+            type: string
+            enum: [jib, banana, advice, powerbuy, globalhouse, homepro, thaiwatsadu]
+        - name: sort
+          in: query
+          schema:
+            type: string
+            enum: [name, price, updated, created]
+            default: updated
+        - name: order
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+      responses:
+        '200':
+          description: List of products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /products/add.php:
+    post:
+      tags:
+        - Products
+      summary: Add product to tracking
+      description: Add a new product URL to track
+      operationId: addProduct
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - url
+              properties:
+                url:
+                  type: string
+                  format: uri
+                  description: Product URL from supported platform
+                  example: https://www.jib.co.th/web/product/readProduct/48622
+                target_price:
+                  type: number
+                  format: float
+                  description: Target price for alert
+                  example: 45000.00
+                target_discount_percent:
+                  type: number
+                  format: float
+                  description: Target discount percentage for alert
+                  example: 15.0
+                label:
+                  type: string
+                  description: Custom label for the product
+                  example: Gaming Laptop
+      responses:
+        '201':
+          description: Product added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          description: Product already being tracked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /products/refresh.php:
+    post:
+      tags:
+        - Products
+      summary: Refresh product price
+      description: Manually trigger a price refresh for a product
+      operationId: refreshProduct
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+              properties:
+                product_id:
+                  type: integer
+                  description: Product ID to refresh
+      responses:
+        '200':
+          description: Refresh queued or completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    $ref: '#/components/schemas/Product'
+                  message:
+                    type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /products/history.php:
+    get:
+      tags:
+        - Products
+      summary: Get price history
+      description: Returns price history for a product
+      operationId: getProductHistory
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: product_id
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 30
+            enum: [7, 30, 90]
+      responses:
+        '200':
+          description: Price history data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      product:
+                        $ref: '#/components/schemas/Product'
+                      history:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/PricePoint'
+                      stats:
+                        $ref: '#/components/schemas/PriceStats'
+
+  /products/delete.php:
+    post:
+      tags:
+        - Products
+      summary: Stop tracking product
+      description: Remove a product from user's tracking list
+      operationId: deleteProduct
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - product_id
+              properties:
+                product_id:
+                  type: integer
+      responses:
+        '200':
+          description: Product removed from tracking
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  /events/list.php:
+    get:
+      tags:
+        - Events
+      summary: List price events
+      description: Returns recent price change events
+      operationId: listEvents
+      security:
+        - sessionAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [price_drop, price_increase, back_in_stock, out_of_stock]
+      responses:
+        '200':
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PriceEvent'
+
+  /agents/queue_status.php:
+    get:
+      tags:
+        - Agents
+      summary: Get agent queue status
+      description: Returns statistics about the agent job queue (admin only)
+      operationId: getQueueStatus
+      security:
+        - sessionAuth: []
+      responses:
+        '200':
+          description: Queue statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    properties:
+                      queue:
+                        type: object
+                        properties:
+                          pending:
+                            type: integer
+                          processing:
+                            type: integer
+                          completed_24h:
+                            type: integer
+                          failed_24h:
+                            type: integer
+                      agents:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            last_run:
+                              type: string
+                              format: date-time
+                            jobs_24h:
+                              type: integer
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /agents/trigger_agent.php:
+    post:
+      tags:
+        - Agents
+      summary: Trigger agent manually
+      description: Manually trigger an agent to run (admin only)
+      operationId: triggerAgent
+      security:
+        - sessionAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - agent_type
+              properties:
+                agent_type:
+                  type: string
+                  enum: [scraper, data_cleaning, price_diff, alert_dispatch]
+                immediate:
+                  type: boolean
+                  default: false
+                  description: Run immediately instead of queuing
+      responses:
+        '200':
+          description: Agent triggered
+        '403':
+          $ref: '#/components/responses/Forbidden'
+
+  /notifications/line_webhook.php:
+    post:
+      tags:
+        - Notifications
+      summary: LINE webhook endpoint
+      description: Receives events from LINE Messaging API
+      operationId: lineWebhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                events:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Webhook processed
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        product_id:
+          type: integer
+        platform:
+          type: string
+          enum: [jib, banana, advice, powerbuy, globalhouse, homepro, thaiwatsadu]
+        platform_product_id:
+          type: string
+        product_url:
+          type: string
+          format: uri
+        product_name:
+          type: string
+        image_url:
+          type: string
+          format: uri
+          nullable: true
+        last_price:
+          type: number
+          format: float
+        last_original_price:
+          type: number
+          format: float
+          nullable: true
+        last_stock_status:
+          type: string
+          enum: [in_stock, out_of_stock, preorder, unknown]
+        discount_percent:
+          type: number
+          format: float
+          nullable: true
+        target_price:
+          type: number
+          format: float
+          nullable: true
+        target_discount_percent:
+          type: number
+          format: float
+          nullable: true
+        label:
+          type: string
+          nullable: true
+        is_active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PricePoint:
+      type: object
+      properties:
+        price:
+          type: number
+          format: float
+        original_price:
+          type: number
+          format: float
+          nullable: true
+        stock_status:
+          type: string
+        scraped_at:
+          type: string
+          format: date-time
+
+    PriceStats:
+      type: object
+      properties:
+        min_price:
+          type: number
+          format: float
+        max_price:
+          type: number
+          format: float
+        avg_price:
+          type: number
+          format: float
+        current_price:
+          type: number
+          format: float
+        price_trend:
+          type: string
+          enum: [increasing, decreasing, stable, volatile]
+
+    PriceEvent:
+      type: object
+      properties:
+        event_id:
+          type: integer
+        product_id:
+          type: integer
+        product_name:
+          type: string
+        platform:
+          type: string
+        event_type:
+          type: string
+          enum: [price_drop, price_increase, back_in_stock, out_of_stock]
+        old_price:
+          type: number
+          format: float
+        new_price:
+          type: number
+          format: float
+        change_percent:
+          type: number
+          format: float
+        is_dispatched:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+
+    Pagination:
+      type: object
+      properties:
+        current_page:
+          type: integer
+        total_pages:
+          type: integer
+        total_items:
+          type: integer
+        items_per_page:
+          type: integer
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, degraded]
+        timestamp:
+          type: string
+          format: date-time
+        version:
+          type: string
+        checks:
+          type: object
+          properties:
+            php:
+              type: object
+              properties:
+                status:
+                  type: string
+                version:
+                  type: string
+            database:
+              type: object
+              properties:
+                status:
+                  type: string
+                latency_ms:
+                  type: number
+            filesystem:
+              type: object
+              properties:
+                status:
+                  type: string
+            memory:
+              type: object
+              properties:
+                status:
+                  type: string
+                usage_percent:
+                  type: number
+
+    Error:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+        code:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  securitySchemes:
+    sessionAuth:
+      type: apiKey
+      in: cookie
+      name: PHPSESSID
+      description: PHP session cookie obtained after login

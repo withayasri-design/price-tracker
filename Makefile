@@ -32,6 +32,10 @@ help:
 	@echo "  make queue       - Process agent queue"
 	@echo "  make scrape      - Run scraper agent"
 	@echo "  make cleanup     - Run cleanup job"
+	@echo "  make backup      - Backup database"
+	@echo ""
+	@echo "Documentation:"
+	@echo "  make docs        - Open API documentation"
 
 # ===================
 # Development
@@ -146,6 +150,9 @@ scrape:
 cleanup:
 	php cron/cleanup.php
 
+backup:
+	php cron/backup.php
+
 # Docker agent commands
 docker-queue:
 	docker-compose exec app php cron/run_agent_queue.php
@@ -174,5 +181,13 @@ status:
 
 # Create necessary directories
 dirs:
-	mkdir -p logs cache uploads temp
-	chmod 755 logs cache uploads temp
+	mkdir -p logs cache uploads temp database/backups
+	chmod 755 logs cache uploads temp database/backups
+
+# API Documentation
+docs:
+	@echo "Opening API documentation..."
+	@python -m webbrowser "http://localhost:8000/api/docs.php" 2>/dev/null || \
+	 xdg-open "http://localhost:8000/api/docs.php" 2>/dev/null || \
+	 open "http://localhost:8000/api/docs.php" 2>/dev/null || \
+	 echo "Visit: http://localhost:8000/api/docs.php"
