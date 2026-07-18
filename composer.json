@@ -22,8 +22,16 @@
         "optimize-autoloader": true,
         "sort-packages": true
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "scripts": {
         "test": "phpunit",
+        "test:unit": "phpunit --testsuite=Unit",
+        "test:integration": "phpunit --testsuite=Integration",
+        "test:coverage": "phpunit --coverage-html coverage",
         "scrape": "php cron/run_agent_queue.php scraper",
         "queue": "php cron/run_agent_queue.php"
     },
