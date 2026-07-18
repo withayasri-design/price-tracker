@@ -170,17 +170,17 @@ $platformInfo = [
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/pages/dashboard.php">
+            <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/pages/products.php">
+                <a class="nav-link" href="../products.php">
                     <i class="fas fa-box me-1"></i>สินค้า
                 </a>
-                <a class="nav-link active" href="/pages/compare.php">
+                <a class="nav-link active" href="../compare.php">
                     <i class="fas fa-balance-scale me-1"></i>เปรียบเทียบ
                 </a>
-                <a class="nav-link" href="/pages/dashboard.php">
+                <a class="nav-link" href="../dashboard.php">
                     <i class="fas fa-home me-1"></i>Dashboard
                 </a>
             </div>
@@ -200,7 +200,7 @@ $platformInfo = [
                             <i class="fas fa-store me-1"></i><?= count($comparisonProducts) ?> ร้านค้า
                         </p>
                     </div>
-                    <a href="/pages/compare.php" class="btn btn-light">
+                    <a href="../compare.php" class="btn btn-light">
                         <i class="fas fa-arrow-left me-1"></i>กลับ
                     </a>
                 </div>
@@ -310,7 +310,7 @@ $platformInfo = [
                         <p class="text-muted mb-4">
                             เพิ่มสินค้าชิ้นเดียวกันจากหลายแพลตฟอร์ม ระบบจะจับคู่และแสดงการเปรียบเทียบราคาให้อัตโนมัติ
                         </p>
-                        <a href="/pages/products.php" class="btn btn-primary">
+                        <a href="../products.php" class="btn btn-primary">
                             <i class="fas fa-plus me-1"></i>เพิ่มสินค้า
                         </a>
                     </div>

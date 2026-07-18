@@ -108,7 +108,7 @@ $platformInfo = [
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/pages/dashboard.php">
+            <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -117,12 +117,12 @@ $platformInfo = [
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/dashboard.php">
+                        <a class="nav-link" href="../dashboard.php">
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/pages/products.php">
+                        <a class="nav-link active" href="../products.php">
                             <i class="fas fa-box me-1"></i>สินค้า
                         </a>
                     </li>
@@ -131,10 +131,10 @@ $platformInfo = [
                             <i class="fas fa-user-circle me-1"></i><?= htmlspecialchars($userName) ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/pages/profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="/pages/line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
+                            <li><a class="dropdown-item" href="../profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="../line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/pages/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -249,7 +249,7 @@ $platformInfo = [
 
                                 <!-- Actions -->
                                 <div class="d-flex gap-2">
-                                    <a href="/pages/product_detail.php?id=<?= $product['tracking_id'] ?>" class="btn btn-outline-primary btn-sm flex-grow-1">
+                                    <a href="../product_detail.php?id=<?= $product['tracking_id'] ?>" class="btn btn-outline-primary btn-sm flex-grow-1">
                                         <i class="fas fa-chart-line me-1"></i>ดูราคา
                                     </a>
                                     <a href="<?= htmlspecialchars($product['product_url']) ?>" target="_blank" class="btn btn-outline-secondary btn-sm" title="ดูสินค้า">

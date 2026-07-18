@@ -84,11 +84,11 @@ $csrfToken = Csrf::generate();
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/pages/admin/dashboard.php">
+            <a class="navbar-brand" href="./dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker Admin
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/pages/dashboard.php">
+                <a class="nav-link" href="../dashboard.php">
                     <i class="fas fa-arrow-left me-1"></i>กลับหน้าหลัก
                 </a>
             </div>
@@ -100,25 +100,25 @@ $csrfToken = Csrf::generate();
             <!-- Sidebar -->
             <div class="col-md-2">
                 <div class="list-group">
-                    <a href="/pages/admin/dashboard.php" class="list-group-item list-group-item-action">
+                    <a href="./dashboard.php" class="list-group-item list-group-item-action">
                         <i class="fas fa-tachometer-alt me-2"></i>Dashboard
                     </a>
-                    <a href="/pages/admin/users.php" class="list-group-item list-group-item-action">
+                    <a href="./users.php" class="list-group-item list-group-item-action">
                         <i class="fas fa-users me-2"></i>จัดการผู้ใช้
                     </a>
-                    <a href="/pages/admin/master_products.php" class="list-group-item list-group-item-action active">
+                    <a href="./master_products.php" class="list-group-item list-group-item-action active">
                         <i class="fas fa-link me-2"></i>Master Products
                         <?php if ($totalReview > 0): ?>
                             <span class="badge bg-danger float-end"><?= $totalReview ?></span>
                         <?php endif; ?>
                     </a>
-                    <a href="/pages/admin/scraping_monitor.php" class="list-group-item list-group-item-action">
+                    <a href="./scraping_monitor.php" class="list-group-item list-group-item-action">
                         <i class="fas fa-spider me-2"></i>Scraping Monitor
                     </a>
-                    <a href="/pages/admin/agent_monitor.php" class="list-group-item list-group-item-action">
+                    <a href="./agent_monitor.php" class="list-group-item list-group-item-action">
                         <i class="fas fa-robot me-2"></i>Agent Monitor
                     </a>
-                    <a href="/pages/admin/settings.php" class="list-group-item list-group-item-action">
+                    <a href="./settings.php" class="list-group-item list-group-item-action">
                         <i class="fas fa-cog me-2"></i>ตั้งค่าระบบ
                     </a>
                 </div>

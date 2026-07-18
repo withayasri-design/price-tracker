@@ -182,7 +182,7 @@ $eventTypeLabels = [
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/pages/dashboard.php">
+            <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -191,18 +191,18 @@ $eventTypeLabels = [
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="/pages/dashboard.php">
+                        <a class="nav-link active" href="../dashboard.php">
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/compare.php">
+                        <a class="nav-link" href="../compare.php">
                             <i class="fas fa-balance-scale me-1"></i>เปรียบเทียบ
                         </a>
                     </li>
                     <?php if (Auth::isAdmin()): ?>
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/admin/master_products.php">
+                        <a class="nav-link" href="../admin/master_products.php">
                             <i class="fas fa-cog me-1"></i>Admin
                         </a>
                     </li>
@@ -212,10 +212,10 @@ $eventTypeLabels = [
                             <i class="fas fa-user-circle me-1"></i><?= htmlspecialchars($userName) ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/pages/profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="/pages/line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
+                            <li><a class="dropdown-item" href="../profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="../line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/pages/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -287,7 +287,7 @@ $eventTypeLabels = [
                 <div class="card">
                     <div class="card-header bg-white d-flex justify-content-between align-items-center">
                         <h5 class="mb-0"><i class="fas fa-box me-2"></i>สินค้าที่ติดตาม</h5>
-                        <a href="/pages/products.php" class="btn btn-primary btn-sm">
+                        <a href="../products.php" class="btn btn-primary btn-sm">
                             <i class="fas fa-plus me-1"></i>เพิ่มสินค้า
                         </a>
                     </div>
@@ -296,7 +296,7 @@ $eventTypeLabels = [
                             <div class="text-center py-5">
                                 <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
                                 <p class="text-muted mb-3">ยังไม่มีสินค้าที่ติดตาม</p>
-                                <a href="/pages/products.php" class="btn btn-primary">
+                                <a href="../products.php" class="btn btn-primary">
                                     <i class="fas fa-plus me-1"></i>เพิ่มสินค้าแรก
                                 </a>
                             </div>

@@ -3,7 +3,15 @@
     "allow": [
       "Bash(dir /b \"C:\\\\xampp\\\\htdocs\\\\price-tracker\")",
       "Bash(git init:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git rm:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nImplement agent pipeline architecture for price tracking\n\nAdd complete agent-based processing pipeline with 4 agents:\n- ScraperAgent: Fetches prices from e-commerce platforms\n- DataCleaningAgent: Fuzzy matches products across platforms\n- PriceDiffAgent: Detects price drops, flash sales, lowest ever\n- AlertDispatchAgent: Sends LINE and email notifications\n\nKey features:\n- DB-backed job queue \\(no Redis required\\)\n- Cross-platform product matching with trigram similarity\n- LINE Messaging API integration with Flex Messages\n- Price event detection and user alert criteria matching\n\nIncludes documentation, API endpoints, and admin UI for\nmaster product review.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git config:*)",
+      "Bash(gh repo create:*)",
+      "Bash(git remote add:*)",
+      "Bash(git push:*)",
+      "Bash(git remote:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

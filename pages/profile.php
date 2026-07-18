@@ -140,7 +140,7 @@ $isLineLinked = !empty($user['line_user_id']);
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/pages/dashboard.php">
+            <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -149,7 +149,7 @@ $isLineLinked = !empty($user['line_user_id']);
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/pages/dashboard.php">
+                        <a class="nav-link" href="../dashboard.php">
                             <i class="fas fa-home me-1"></i>Dashboard
                         </a>
                     </li>
@@ -158,10 +158,10 @@ $isLineLinked = !empty($user['line_user_id']);
                             <i class="fas fa-user-circle me-1"></i><?= htmlspecialchars($user['full_name']) ?>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="/pages/profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
-                            <li><a class="dropdown-item" href="/pages/line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
+                            <li><a class="dropdown-item" href="../profile.php"><i class="fas fa-user me-2"></i>Profile</a></li>
+                            <li><a class="dropdown-item" href="../line_connect.php"><i class="fab fa-line me-2"></i>LINE</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="/pages/logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 </ul>
@@ -198,7 +198,7 @@ $isLineLinked = !empty($user['line_user_id']);
                                 <?php if ($isLineLinked): ?>
                                     <span class="text-success"><i class="fas fa-check-circle me-1"></i>เชื่อมต่อแล้ว</span>
                                 <?php else: ?>
-                                    <a href="/pages/line_connect.php" class="text-decoration-none">เชื่อมต่อ LINE</a>
+                                    <a href="../line_connect.php" class="text-decoration-none">เชื่อมต่อ LINE</a>
                                 <?php endif; ?>
                             </p>
                         </div>
@@ -317,7 +317,7 @@ $isLineLinked = !empty($user['line_user_id']);
                                 <label class="form-check-label" for="notifyLine">
                                     <i class="fab fa-line me-1"></i>รับแจ้งเตือนทาง LINE
                                     <?php if (!$isLineLinked): ?>
-                                        <a href="/pages/line_connect.php" class="text-decoration-none small">(เชื่อมต่อ LINE ก่อน)</a>
+                                        <a href="../line_connect.php" class="text-decoration-none small">(เชื่อมต่อ LINE ก่อน)</a>
                                     <?php endif; ?>
                                 </label>
                             </div>

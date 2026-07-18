@@ -181,7 +181,7 @@ $csrfToken = Csrf::generate();
                     <div class="text-center">
                         <p class="mb-0">
                             ยังไม่มีบัญชี?
-                            <a href="/pages/register.php" class="text-decoration-none fw-bold">สมัครสมาชิก</a>
+                            <a href="../register.php" class="text-decoration-none fw-bold">สมัครสมาชิก</a>
                         </p>
                     </div>
                 </div>

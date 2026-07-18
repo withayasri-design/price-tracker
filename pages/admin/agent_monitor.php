@@ -111,14 +111,14 @@ $logLevelColors = [
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/pages/dashboard.php">
+            <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="/pages/admin/master_products.php">Master Products</a>
-                <a class="nav-link active" href="/pages/admin/agent_monitor.php">Agents</a>
-                <a class="nav-link" href="/pages/admin/settings.php">Settings</a>
-                <a class="nav-link" href="/pages/dashboard.php">
+                <a class="nav-link" href="./master_products.php">Master Products</a>
+                <a class="nav-link active" href="./agent_monitor.php">Agents</a>
+                <a class="nav-link" href="./settings.php">Settings</a>
+                <a class="nav-link" href="../dashboard.php">
                     <i class="fas fa-arrow-left me-1"></i>Dashboard
                 </a>
             </div>
