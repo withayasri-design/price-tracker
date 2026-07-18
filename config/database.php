@@ -59,8 +59,13 @@ $options = [
 try {
     $pdo = new PDO($dsn, $dbConfig['user'], $dbConfig['pass'], $options);
 } catch (PDOException $e) {
-    // Log error but don't expose details in production
-    error_log('Database connection failed: ' . $e->getMessage());
+    // Log error using file logger
+    require_once __DIR__ . '/../core/Logger.php';
+    \Core\Logger::channel('database')->critical('Database connection failed', [
+        'error' => $e->getMessage(),
+        'host' => $dbConfig['host'],
+        'database' => $dbConfig['name'],
+    ]);
 
     if (($_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG') ?: 'false') === 'true') {
         throw $e;

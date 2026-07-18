@@ -20,6 +20,7 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../config/database.php';
+require_once __DIR__ . '/../../config/logging.php';
 require_once __DIR__ . '/../../core/Auth.php';
 require_once __DIR__ . '/../../core/Csrf.php';
 require_once __DIR__ . '/../../modules/scraping/UrlParser.php';
@@ -102,6 +103,12 @@ try {
         $targetDiscountPercent
     );
 
+    log_info('Product added', [
+        'user_id' => Auth::userId(),
+        'url' => $url,
+        'tracking_id' => $result['tracking_id'] ?? null,
+    ], 'api');
+
     echo json_encode([
         'success' => true,
         'data' => $result,
@@ -109,6 +116,12 @@ try {
     ]);
 
 } catch (\Exception $e) {
+    log_error('Failed to add product', [
+        'user_id' => Auth::userId() ?? null,
+        'url' => $url ?? null,
+        'error' => $e->getMessage(),
+    ], 'api');
+
     http_response_code(400);
     echo json_encode([
         'success' => false,
