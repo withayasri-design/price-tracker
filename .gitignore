@@ -72,5 +72,8 @@ Thumbs.db
 # Session files
 /sessions/
 
+# Installation lock
+.installed
+
 # PHPMailer temp
 /temp/
