@@ -1,0 +1,163 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, develop]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  # PHP Linting and Static Analysis
+  lint:
+    name: PHP Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_mysql, curl, json, zip
+          coverage: none
+
+      - name: Check PHP syntax
+        run: |
+          find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+  # Unit Tests
+  test:
+    name: PHPUnit Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mariadb:10.11
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: price_tracker_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, pdo, pdo_mysql, curl, json, zip
+          coverage: xdebug
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Wait for MySQL
+        run: |
+          while ! mysqladmin ping -h"127.0.0.1" --silent; do
+            sleep 1
+          done
+
+      - name: Setup test database
+        run: |
+          mysql -h 127.0.0.1 -u root -proot price_tracker_test < database/schema.sql
+        env:
+          MYSQL_PWD: root
+
+      - name: Create test environment
+        run: |
+          cat > .env.testing << EOF
+          DB_HOST=127.0.0.1
+          DB_NAME=price_tracker_test
+          DB_USER=root
+          DB_PASS=root
+          APP_ENV=testing
+          EOF
+
+      - name: Run unit tests
+        run: composer test:unit
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: price_tracker_test
+          DB_USER: root
+          DB_PASS: root
+
+      - name: Run integration tests
+        run: composer test:integration
+        env:
+          DB_HOST: 127.0.0.1
+          DB_DATABASE: price_tracker_test
+          DB_USER: root
+          DB_PASS: root
+
+  # Docker Build Test
+  docker:
+    name: Docker Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: price-tracker:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # Security Check
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Check for known vulnerabilities
+        run: composer audit
+
+  # Code Style (optional - uncomment if using PHP-CS-Fixer)
+  # style:
+  #   name: Code Style
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: shivammathur/setup-php@v2
+  #       with:
+  #         php-version: '8.2'
+  #     - run: composer install
+  #     - run: vendor/bin/php-cs-fixer fix --dry-run --diff
