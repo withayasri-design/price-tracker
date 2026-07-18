@@ -1,0 +1,17 @@
+# Price Tracker Cron Jobs
+# Runs inside Docker container
+
+# Environment variables
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# Agent queue processor - runs every minute
+* * * * * www-data cd /var/www/html && php cron/run_agent_queue.php >> /var/www/html/logs/agent_queue.log 2>&1
+
+# Scheduled scrape - runs every 30 minutes
+*/30 * * * * www-data cd /var/www/html && php cron/run_scheduled_scrape.php >> /var/www/html/logs/scrape.log 2>&1
+
+# Daily cleanup - runs at 3:00 AM
+0 3 * * * www-data cd /var/www/html && php cron/cleanup.php >> /var/www/html/logs/cleanup.log 2>&1
+
+# Empty line required at end

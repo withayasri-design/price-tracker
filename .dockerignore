@@ -1,0 +1,58 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.idea
+.vscode
+*.sublime-*
+
+# Development files
+.env
+.env.local
+.env.testing
+.installed
+
+# Documentation (optional - uncomment to exclude)
+# docs/
+# *.md
+
+# Tests (optional - uncomment to exclude in production)
+# tests/
+# phpunit.xml
+# .phpunit.cache/
+
+# Logs and cache (will be created at runtime)
+logs/
+cache/
+uploads/
+temp/
+coverage/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.tmp
+*.temp
+*.swp
+
+# Database dumps
+*.sql.gz
+database/backups/
+
+# Claude/AI files
+.claude/
+
+# Docker files (don't need to be inside the image)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile.dev
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Install script (security - remove after install)
+# install.php
