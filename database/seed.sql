@@ -3,11 +3,11 @@
 
 -- Sample admin user (password: admin123)
 INSERT INTO users (email, password_hash, full_name, role, is_active, notify_email, notify_line, created_at) VALUES
-('admin@pricetracker.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Admin User', 'admin', 1, 1, 0, NOW());
+('admin@pricetracker.local', '$2y$12$R5sy/7kStkue/z.P9eupmuAuCgoUpcfmIMf.C5FePrdg.0/nz6Q86', 'Admin User', 'admin', 1, 1, 0, NOW());
 
 -- Sample regular user (password: user123)
 INSERT INTO users (email, password_hash, full_name, role, is_active, notify_email, notify_line, created_at) VALUES
-('user@pricetracker.local', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Test User', 'user', 1, 1, 0, NOW());
+('user@pricetracker.local', '$2y$12$83uEB3yQS1/VrfgcAbWifOw3btJWb5ax.pw2gVrU30.EPQF3E08Cy', 'Test User', 'user', 1, 1, 0, NOW());
 
 -- System settings
 INSERT INTO system_settings (setting_key, setting_value, updated_at) VALUES

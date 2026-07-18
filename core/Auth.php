@@ -164,14 +164,19 @@ class Auth
     /**
      * Require user to be logged in. Redirects to login if not.
      *
-     * @param string $redirectUrl URL to redirect to if not logged in
+     * @param string|null $redirectUrl URL to redirect to if not logged in (null = auto-detect)
      */
-    public static function requireLogin(string $redirectUrl = '/pages/login.php'): void
+    public static function requireLogin(?string $redirectUrl = null): void
     {
         if (!self::check()) {
             // Store intended URL for redirect after login
             self::startSession();
             $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'] ?? '/';
+
+            // Auto-detect login page path based on current script location
+            if ($redirectUrl === null) {
+                $redirectUrl = self::getRelativePath('pages/login.php');
+            }
 
             header('Location: ' . $redirectUrl);
             exit;
@@ -181,11 +186,14 @@ class Auth
     /**
      * Require user to be an admin. Redirects or shows 403 if not.
      *
-     * @param string $redirectUrl URL to redirect to if not admin
+     * @param string|null $redirectUrl URL to redirect to if not admin (null = auto-detect)
      */
-    public static function requireAdmin(string $redirectUrl = '/pages/dashboard.php'): void
+    public static function requireAdmin(?string $redirectUrl = null): void
     {
-        self::requireLogin();
+        if ($redirectUrl === null) {
+            $redirectUrl = self::getRelativePath('pages/login.php');
+        }
+        self::requireLogin($redirectUrl);
 
         if (!self::isAdmin()) {
             http_response_code(403);
@@ -194,12 +202,36 @@ class Auth
     }
 
     /**
+     * Get relative path from current script to target file.
+     *
+     * @param string $targetPath Target path from project root (e.g., 'pages/login.php')
+     * @return string Relative path
+     */
+    private static function getRelativePath(string $targetPath): string
+    {
+        $scriptPath = dirname($_SERVER['SCRIPT_NAME']);
+        $depth = substr_count(trim($scriptPath, '/'), '/');
+
+        // If we're in a subdirectory like /price-tracker/pages/, we need to go up
+        // Count how many levels deep we are from the project root
+        if (strpos($scriptPath, '/pages/admin') !== false) {
+            return '../../' . $targetPath;
+        } elseif (strpos($scriptPath, '/pages') !== false || strpos($scriptPath, '/api') !== false) {
+            return '../' . $targetPath;
+        } elseif (strpos($scriptPath, '/admin') !== false) {
+            return '../' . $targetPath;
+        }
+
+        return $targetPath;
+    }
+
+    /**
      * Get and clear the redirect URL stored before login.
      */
     public static function getRedirectAfterLogin(): string
     {
         self::startSession();
-        $url = $_SESSION['redirect_after_login'] ?? '/pages/dashboard.php';
+        $url = $_SESSION['redirect_after_login'] ?? self::getRelativePath('pages/dashboard.php');
         unset($_SESSION['redirect_after_login']);
         return $url;
     }
