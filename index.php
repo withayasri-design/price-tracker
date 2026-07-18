@@ -14,7 +14,7 @@ use Core\Auth;
 
 // Redirect logged-in users to dashboard
 if (Auth::check()) {
-    header('Location: /pages/dashboard.php');
+    header('Location: pages/dashboard.php');
     exit;
 }
 ?>
@@ -59,12 +59,12 @@ if (Auth::check()) {
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">
+            <a class="navbar-brand" href=".">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
             <div class="ms-auto">
-                <a href="/pages/login.php" class="btn btn-outline-light me-2">เข้าสู่ระบบ</a>
-                <a href="/pages/register.php" class="btn btn-primary">สมัครสมาชิก</a>
+                <a href="pages/login.php" class="btn btn-outline-light me-2">เข้าสู่ระบบ</a>
+                <a href="pages/register.php" class="btn btn-primary">สมัครสมาชิก</a>
             </div>
         </div>
     </nav>
@@ -83,7 +83,7 @@ if (Auth::check()) {
                 <span class="platform-badge text-success"><i class="fas fa-laptop"></i> JIB</span>
                 <span class="platform-badge text-warning"><i class="fas fa-desktop"></i> Banana IT</span>
             </div>
-            <a href="/pages/register.php" class="btn btn-light btn-lg px-5">
+            <a href="pages/register.php" class="btn btn-light btn-lg px-5">
                 <i class="fas fa-rocket me-2"></i>เริ่มต้นใช้งานฟรี
             </a>
         </div>
@@ -195,7 +195,7 @@ if (Auth::check()) {
         <div class="container">
             <h2 class="mb-4">เริ่มติดตามราคาสินค้าวันนี้</h2>
             <p class="text-muted mb-4">ฟรี! ไม่มีค่าใช้จ่าย ไม่ต้องใส่บัตรเครดิต</p>
-            <a href="/pages/register.php" class="btn btn-primary btn-lg px-5">
+            <a href="pages/register.php" class="btn btn-primary btn-lg px-5">
                 <i class="fas fa-user-plus me-2"></i>สมัครสมาชิกฟรี
             </a>
         </div>
