@@ -73,10 +73,10 @@ FROM tracked_products
 CROSS JOIN (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) AS nums;
 
 -- Sample master products for cross-platform matching
-INSERT INTO master_products (canonical_name, category, brand, model_number, created_at) VALUES
-('Apple MacBook Air M3 13 inch', 'Laptop', 'Apple', 'MBA-M3-13', NOW()),
-('Samsung Galaxy S24 Ultra', 'Smartphone', 'Samsung', 'SM-S928B', NOW()),
-('ASUS ROG Strix G16', 'Laptop', 'ASUS', 'G614JV', NOW());
+INSERT INTO master_products (canonical_name, brand, category, normalized_attributes, match_confidence, created_at) VALUES
+('Apple MacBook Air M3 13 inch', 'Apple', 'Laptop', '{"model": "MBA-M3-13", "screen": "13 inch", "chip": "M3"}', 1.00, NOW()),
+('Samsung Galaxy S24 Ultra', 'Samsung', 'Smartphone', '{"model": "SM-S928B", "storage": "256GB"}', 1.00, NOW()),
+('ASUS ROG Strix G16', 'ASUS', 'Laptop', '{"model": "G614JV", "series": "ROG Strix"}', 1.00, NOW());
 
 -- Sample price events
 INSERT INTO price_events (product_id, event_type, old_price, new_price, change_percent, is_dispatched, created_at)
