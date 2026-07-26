@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Modules\Matching;
 
+require_once __DIR__ . '/SimilarityCalculator.php';
+
 use PDO;
 
 /**
