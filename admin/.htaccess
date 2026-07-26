@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^(.*)$ /price-tracker/pages/admin/$1 [L,R=301]
