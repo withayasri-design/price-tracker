@@ -23,7 +23,7 @@ $userName = Auth::fullName();
 // Get master products that have multiple platform matches for this user
 $stmt = $pdo->prepare("
     SELECT
-        mp.master_id,
+        mp.master_product_id,
         mp.canonical_name,
         mp.category,
         COUNT(DISTINCT pmm.product_id) as platform_count,
@@ -31,11 +31,11 @@ $stmt = $pdo->prepare("
         MAX(tp.last_price) as max_price,
         GROUP_CONCAT(DISTINCT tp.platform) as platforms
     FROM master_products mp
-    JOIN product_master_mapping pmm ON mp.master_id = pmm.master_id AND pmm.is_active = 1
+    JOIN product_master_mapping pmm ON mp.master_product_id = pmm.master_product_id
     JOIN tracked_products tp ON pmm.product_id = tp.product_id AND tp.is_active = 1
     JOIN user_tracking ut ON tp.product_id = ut.product_id AND ut.is_active = 1
     WHERE ut.user_id = :user_id
-    GROUP BY mp.master_id
+    GROUP BY mp.master_product_id
     HAVING platform_count >= 1
     ORDER BY platform_count DESC, mp.canonical_name ASC
     LIMIT 50
@@ -59,7 +59,7 @@ if ($selectedMasterId) {
             tp.last_original_price,
             tp.last_stock_status,
             tp.last_checked_at,
-            pmm.confidence_score,
+            pmm.similarity_score,
             CASE
                 WHEN tp.last_original_price > 0
                 THEN ROUND((1 - tp.last_price / tp.last_original_price) * 100, 1)
@@ -67,14 +67,14 @@ if ($selectedMasterId) {
             END as discount_percent
         FROM product_master_mapping pmm
         JOIN tracked_products tp ON pmm.product_id = tp.product_id AND tp.is_active = 1
-        WHERE pmm.master_id = :master_id AND pmm.is_active = 1
+        WHERE pmm.master_product_id = :master_id
         ORDER BY tp.last_price ASC
     ");
     $stmt->execute(['master_id' => $selectedMasterId]);
     $comparisonProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Get master product info
-    $stmt = $pdo->prepare("SELECT * FROM master_products WHERE master_id = :id");
+    $stmt = $pdo->prepare("SELECT * FROM master_products WHERE master_product_id = :id");
     $stmt->execute(['id' => $selectedMasterId]);
     $selectedMaster = $stmt->fetch(PDO::FETCH_ASSOC);
 }
@@ -319,7 +319,7 @@ $platformInfo = [
                 <div class="row">
                     <?php foreach ($masterProducts as $master): ?>
                         <div class="col-md-6 col-lg-4 mb-4">
-                            <a href="?master_id=<?= $master['master_id'] ?>" class="card text-decoration-none product-card h-100">
+                            <a href="?master_id=<?= $master['master_product_id'] ?>" class="card text-decoration-none product-card h-100">
                                 <div class="card-body">
                                     <h6 class="card-title text-dark"><?= htmlspecialchars($master['canonical_name']) ?></h6>
                                     <p class="text-muted small mb-2">
