@@ -71,7 +71,8 @@ price-tracker/
 │   │       ├── GlobalHouseAdapter.php
 │   │       ├── HomeProAdapter.php
 │   │       ├── ThaiWatsaduAdapter.php
-│   │       └── PowerBuyAdapter.php
+│   │       ├── PowerBuyAdapter.php
+│   │       └── LazadaAdapter.php
 │   ├── matching/
 │   │   ├── SimilarityCalculator.php  # Trigram/Levenshtein
 │   │   └── MasterProductService.php  # Master product catalog
@@ -210,15 +211,15 @@ Before implementing any module, read its spec file in `docs/`:
 | Global House | Ready | `GlobalHouseAdapter.php` |
 | HomePro | Ready | `HomeProAdapter.php` |
 | Thai Watsadu | Ready | `ThaiWatsaduAdapter.php` |
+| Lazada | Ready | `LazadaAdapter.php` |
 | Shopee | Not implemented | SPA + anti-bot, needs API/headless |
-| Lazada | Not implemented | SPA + anti-bot, needs API/headless |
 | TikTok Shop | Not implemented | SPA + anti-bot, needs API/headless |
 
 ## Development Status
 
 - [x] Database schema + Auth + Project skeleton
 - [x] Product Tracking (Add/List/Threshold)
-- [x] Scraping Engine (7 platform adapters)
+- [x] Scraping Engine (8 platform adapters)
 - [x] Price History + Charts
 - [x] Agent Pipeline (Scraper → DataCleaning → PriceDiff → AlertDispatch)
 - [x] LINE + Email Notifications
