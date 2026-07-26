@@ -23,6 +23,7 @@ require_once __DIR__ . '/adapters/GlobalHouseAdapter.php';
 require_once __DIR__ . '/adapters/HomeProAdapter.php';
 require_once __DIR__ . '/adapters/ThaiWatsaduAdapter.php';
 require_once __DIR__ . '/adapters/PowerBuyAdapter.php';
+require_once __DIR__ . '/adapters/LazadaAdapter.php';
 
 use PDO;
 use Modules\Scraping\Adapters\JibAdapter;
@@ -32,6 +33,7 @@ use Modules\Scraping\Adapters\GlobalHouseAdapter;
 use Modules\Scraping\Adapters\HomeProAdapter;
 use Modules\Scraping\Adapters\ThaiWatsaduAdapter;
 use Modules\Scraping\Adapters\PowerBuyAdapter;
+use Modules\Scraping\Adapters\LazadaAdapter;
 
 class ScrapingService
 {
@@ -56,6 +58,9 @@ class ScrapingService
         $this->register(new BananaAdapter());
         $this->register(new AdviceAdapter());
         $this->register(new PowerBuyAdapter());
+
+        // E-commerce marketplaces
+        $this->register(new LazadaAdapter());
 
         // Home improvement retailers
         $this->register(new GlobalHouseAdapter());
