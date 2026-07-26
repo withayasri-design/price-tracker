@@ -73,7 +73,8 @@ price-tracker/
 │   │       ├── ThaiWatsaduAdapter.php
 │   │       ├── PowerBuyAdapter.php
 │   │       ├── LazadaAdapter.php
-│   │       └── ShopeeAdapter.php
+│   │       ├── ShopeeAdapter.php
+│   │       └── TikTokShopAdapter.php
 │   ├── matching/
 │   │   ├── SimilarityCalculator.php  # Trigram/Levenshtein
 │   │   └── MasterProductService.php  # Master product catalog
@@ -214,13 +215,13 @@ Before implementing any module, read its spec file in `docs/`:
 | Thai Watsadu | Ready | `ThaiWatsaduAdapter.php` |
 | Lazada | Ready | `LazadaAdapter.php` |
 | Shopee | Limited | `ShopeeAdapter.php` - URL parsing works, scraping blocked by anti-bot |
-| TikTok Shop | Not implemented | SPA + anti-bot, needs API/headless |
+| TikTok Shop | Limited | `TikTokShopAdapter.php` - URL parsing works, scraping blocked by security check |
 
 ## Development Status
 
 - [x] Database schema + Auth + Project skeleton
 - [x] Product Tracking (Add/List/Threshold)
-- [x] Scraping Engine (9 platform adapters)
+- [x] Scraping Engine (10 platform adapters)
 - [x] Price History + Charts
 - [x] Agent Pipeline (Scraper → DataCleaning → PriceDiff → AlertDispatch)
 - [x] LINE + Email Notifications
