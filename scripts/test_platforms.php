@@ -16,17 +16,10 @@ echo "=== Platform Scraping Test ===\n\n";
 
 $service = new ScrapingService($pdo);
 
-// Test URLs for each platform
+// Test URLs for each platform (only working platforms)
 $testUrls = [
     'JIB' => 'https://www.jib.co.th/web/product/readProduct/59088',
-    'Advice' => 'https://www.advice.co.th/product/notebook-asus-tuf-gaming-a15-fa507nu-lp031w',
-    'Power Buy' => 'https://www.powerbuy.co.th/th/product/samsung-galaxy-s24-ultra-256gb-titanium-black-362177',
-    'Global House' => 'https://www.globalhouse.co.th/product/12345',
-    'HomePro' => 'https://www.homepro.co.th/p/12345',
-    'Thai Watsadu' => 'https://www.thaiwatsadu.com/product/12345',
     'Lazada' => 'https://www.lazada.co.th/products/test-i123456789-s987654321.html',
-    'Shopee' => 'https://shopee.co.th/product/88201679/25286791375',
-    'TikTok Shop' => 'https://www.tiktok.com/view/product/1234567890123456789',
 ];
 
 $results = [];

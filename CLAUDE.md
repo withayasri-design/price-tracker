@@ -206,16 +206,11 @@ Before implementing any module, read its spec file in `docs/`:
 
 | Platform | Status | Adapter |
 |----------|--------|---------|
-| JIB | Ready | `JibAdapter.php` |
-| Banana IT | Ready | `BananaAdapter.php` |
-| Advice | Ready | `AdviceAdapter.php` |
-| Power Buy | Ready | `PowerBuyAdapter.php` |
-| Global House | Ready | `GlobalHouseAdapter.php` |
-| HomePro | Ready | `HomeProAdapter.php` |
-| Thai Watsadu | Ready | `ThaiWatsaduAdapter.php` |
-| Lazada | Ready | `LazadaAdapter.php` |
-| Shopee | Limited | `ShopeeAdapter.php` - URL parsing works, scraping blocked by anti-bot |
-| TikTok Shop | Limited | `TikTokShopAdapter.php` - URL parsing works, scraping blocked by security check |
+| JIB | ✅ Ready | `JibAdapter.php` |
+| Lazada | ✅ Ready | `LazadaAdapter.php` (requires Puppeteer) |
+
+**Removed platforms (blocked by anti-bot):**
+- Shopee, TikTok Shop, Advice, Power Buy, HomePro, Thai Watsadu, Global House, Banana IT
 
 ## Development Status
 

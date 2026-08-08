@@ -17,27 +17,11 @@ require_once __DIR__ . '/ScrapedProduct.php';
 require_once __DIR__ . '/ScrapingException.php';
 require_once __DIR__ . '/BaseAdapter.php';
 require_once __DIR__ . '/adapters/JibAdapter.php';
-require_once __DIR__ . '/adapters/BananaAdapter.php';
-require_once __DIR__ . '/adapters/AdviceAdapter.php';
-require_once __DIR__ . '/adapters/GlobalHouseAdapter.php';
-require_once __DIR__ . '/adapters/HomeProAdapter.php';
-require_once __DIR__ . '/adapters/ThaiWatsaduAdapter.php';
-require_once __DIR__ . '/adapters/PowerBuyAdapter.php';
 require_once __DIR__ . '/adapters/LazadaAdapter.php';
-require_once __DIR__ . '/adapters/ShopeeAdapter.php';
-require_once __DIR__ . '/adapters/TikTokShopAdapter.php';
 
 use PDO;
 use Modules\Scraping\Adapters\JibAdapter;
-use Modules\Scraping\Adapters\BananaAdapter;
-use Modules\Scraping\Adapters\AdviceAdapter;
-use Modules\Scraping\Adapters\GlobalHouseAdapter;
-use Modules\Scraping\Adapters\HomeProAdapter;
-use Modules\Scraping\Adapters\ThaiWatsaduAdapter;
-use Modules\Scraping\Adapters\PowerBuyAdapter;
 use Modules\Scraping\Adapters\LazadaAdapter;
-use Modules\Scraping\Adapters\ShopeeAdapter;
-use Modules\Scraping\Adapters\TikTokShopAdapter;
 
 class ScrapingService
 {
@@ -54,24 +38,18 @@ class ScrapingService
 
     /**
      * Register default platform adapters.
+     *
+     * Note: Only platforms that are confirmed working are registered.
+     * Removed due to anti-bot blocking: Shopee, TikTok, Advice, PowerBuy,
+     * HomePro, ThaiWatsadu, GlobalHouse, BananaIT
      */
     private function registerDefaultAdapters(): void
     {
         // IT/Electronics retailers
         $this->register(new JibAdapter());
-        $this->register(new BananaAdapter());
-        $this->register(new AdviceAdapter());
-        $this->register(new PowerBuyAdapter());
 
         // E-commerce marketplaces
         $this->register(new LazadaAdapter());
-        $this->register(new ShopeeAdapter());
-        $this->register(new TikTokShopAdapter());
-
-        // Home improvement retailers
-        $this->register(new GlobalHouseAdapter());
-        $this->register(new HomeProAdapter());
-        $this->register(new ThaiWatsaduAdapter());
     }
 
     /**
