@@ -108,6 +108,18 @@ $settingGroups = [
             'agent_dispatch_batch_delay_seconds' => ['label' => 'Dispatch Delay (วินาที)', 'type' => 'number'],
         ],
     ],
+    'affiliate' => [
+        'title' => 'Affiliate Links',
+        'icon' => 'link',
+        'settings' => [
+            'affiliate_lazada_enabled' => ['label' => 'เปิดใช้งาน Lazada Affiliate (1=เปิด, 0=ปิด)', 'type' => 'text'],
+            'affiliate_lazada_partner_id' => ['label' => 'Lazada Partner ID', 'type' => 'text'],
+            'affiliate_lazada_tracking_id' => ['label' => 'Lazada Tracking ID (optional)', 'type' => 'text'],
+            'affiliate_accesstrade_enabled' => ['label' => 'เปิดใช้งาน AccessTrade (1=เปิด, 0=ปิด)', 'type' => 'text'],
+            'affiliate_accesstrade_publisher_id' => ['label' => 'AccessTrade Publisher ID', 'type' => 'text'],
+            'affiliate_accesstrade_jib_campaign_id' => ['label' => 'AccessTrade JIB Campaign ID', 'type' => 'text'],
+        ],
+    ],
 ];
 ?>
 <!DOCTYPE html>

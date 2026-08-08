@@ -102,6 +102,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute(['id' => $productId]);
                 $message = 'ลบสินค้าเรียบร้อย';
             }
+
+        } elseif ($action === 'generate_affiliate') {
+            $productId = (int) ($_POST['product_id'] ?? 0);
+            if ($productId > 0) {
+                require_once __DIR__ . '/../../modules/affiliate/AffiliateService.php';
+
+                $affiliateService = new \Modules\Affiliate\AffiliateService($pdo);
+
+                // Get product info
+                $stmt = $pdo->prepare("SELECT platform, product_url FROM tracked_products WHERE product_id = :id");
+                $stmt->execute(['id' => $productId]);
+                $product = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($product) {
+                    $result = $affiliateService->generateAffiliateLink($product['product_url'], $product['platform']);
+
+                    if ($result['success']) {
+                        $affiliateService->updateProductAffiliateUrl($productId, $result['url'], $result['program']);
+                        $message = 'สร้าง Affiliate Link สำเร็จ';
+                    } else {
+                        throw new Exception($result['message'] ?? 'ไม่สามารถสร้าง Affiliate Link ได้');
+                    }
+                }
+            }
+
+        } elseif ($action === 'generate_all_affiliates') {
+            require_once __DIR__ . '/../../modules/affiliate/AffiliateService.php';
+
+            $affiliateService = new \Modules\Affiliate\AffiliateService($pdo);
+            $results = $affiliateService->generateMissingAffiliateLinks();
+
+            $message = "สร้าง Affiliate Links: สำเร็จ {$results['success']}, ข้าม {$results['skipped']}, ล้มเหลว {$results['failed']}";
         }
 
     } catch (Exception $e) {
@@ -174,6 +206,8 @@ $sql = "
         tp.last_checked_at,
         tp.is_active,
         tp.created_at,
+        tp.affiliate_url,
+        tp.affiliate_program,
         (SELECT COUNT(*) FROM user_tracking ut WHERE ut.product_id = tp.product_id AND ut.is_active = 1) as tracking_count,
         (SELECT COUNT(*) FROM price_history ph WHERE ph.product_id = tp.product_id) as history_count
     FROM tracked_products tp
@@ -301,6 +335,13 @@ $platforms = [
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addProductModal">
                     <i class="fas fa-plus me-1"></i>เพิ่มสินค้า
                 </button>
+                <form method="post" class="d-inline ms-2">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                    <input type="hidden" name="action" value="generate_all_affiliates">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-link me-1"></i>สร้าง Affiliate Links
+                    </button>
+                </form>
                 <a href="index.php" class="btn btn-outline-secondary ms-2">
                     <i class="fas fa-arrow-left me-1"></i>กลับ
                 </a>
@@ -419,6 +460,7 @@ $platforms = [
                             <th>Platform</th>
                             <th>ชื่อสินค้า</th>
                             <th class="text-end">ราคา</th>
+                            <th class="text-center">Affiliate</th>
                             <th class="text-center">สถานะ</th>
                             <th class="text-center">ติดตาม</th>
                             <th>ตรวจสอบล่าสุด</th>
@@ -428,7 +470,7 @@ $platforms = [
                     <tbody>
                         <?php if (empty($products)): ?>
                         <tr>
-                            <td colspan="8" class="text-center text-muted py-4">ไม่พบสินค้า</td>
+                            <td colspan="9" class="text-center text-muted py-4">ไม่พบสินค้า</td>
                         </tr>
                         <?php else: ?>
                         <?php foreach ($products as $product): ?>
@@ -462,6 +504,22 @@ $platforms = [
                                 <?php endif; ?>
                                 <?php else: ?>
                                 <span class="text-muted">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <?php if (!empty($product['affiliate_url'])): ?>
+                                <a href="<?= htmlspecialchars($product['affiliate_url']) ?>" target="_blank" class="badge bg-success text-decoration-none" title="<?= htmlspecialchars($product['affiliate_program'] ?? '') ?>">
+                                    <i class="fas fa-link me-1"></i><?= strtoupper($product['affiliate_program'] ?? 'OK') ?>
+                                </a>
+                                <?php else: ?>
+                                <form method="post" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrfToken) ?>">
+                                    <input type="hidden" name="action" value="generate_affiliate">
+                                    <input type="hidden" name="product_id" value="<?= $product['product_id'] ?>">
+                                    <button type="submit" class="btn btn-outline-secondary btn-sm" title="สร้าง Affiliate Link">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
                                 <?php endif; ?>
                             </td>
                             <td class="text-center">

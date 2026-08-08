@@ -216,10 +216,10 @@ Before implementing any module, read its spec file in `docs/`:
 
 - [x] Database schema + Auth + Project skeleton
 - [x] Product Tracking (Add/List/Threshold)
-- [x] Scraping Engine (10 platform adapters)
+- [x] Scraping Engine (2 working adapters: JIB, Lazada)
 - [x] Price History + Charts
 - [x] Agent Pipeline (Scraper → DataCleaning → PriceDiff → AlertDispatch)
 - [x] LINE + Email Notifications
 - [x] Cross-platform Price Comparison
 - [x] Admin Dashboard (Settings, Agent Monitor, Master Products)
-- [ ] Affiliate Links (Post-MVP)
+- [x] Affiliate Links (Lazada, AccessTrade for JIB)
