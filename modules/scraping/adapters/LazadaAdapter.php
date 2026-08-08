@@ -19,6 +19,7 @@ namespace Modules\Scraping\Adapters;
 use Modules\Scraping\BaseAdapter;
 use Modules\Scraping\ScrapedProduct;
 use Modules\Scraping\ScrapingException;
+use Modules\Scraping\HeadlessScraper;
 
 class LazadaAdapter extends BaseAdapter
 {
@@ -89,15 +90,77 @@ class LazadaAdapter extends BaseAdapter
         // Fallback: Try basic HTML parsing
         $this->parseBasicHtml($product, $html);
 
+        // If still no data, try headless browser
         if (empty($product->name) || $product->price === null) {
+            if ($this->tryHeadlessScraping($product, $productId, $url)) {
+                return $product;
+            }
+
             throw new ScrapingException(
-                'Could not extract product data from Lazada page',
+                'Lazada มีระบบป้องกัน Bot ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณาลองใหม่ภายหลังหรือตรวจสอบ URL',
                 ScrapingException::ERROR_PARSING,
                 $url
             );
         }
 
         return $product;
+    }
+
+    /**
+     * Try to extract data using headless browser (Puppeteer).
+     */
+    private function tryHeadlessScraping(ScrapedProduct &$product, string $productId, string $url): bool
+    {
+        require_once __DIR__ . '/../HeadlessScraper.php';
+
+        $scraper = new HeadlessScraper();
+
+        if (!$scraper->isAvailable()) {
+            return false;
+        }
+
+        $result = $scraper->scrape('lazada', $url);
+
+        // Check if blocked by anti-bot
+        if (!empty($result['blocked'])) {
+            return false;
+        }
+
+        if (!$result['success'] || empty($result['data'])) {
+            return false;
+        }
+
+        $data = $result['data'];
+
+        // Skip if name looks like a block page or "product not found"
+        if (!empty($data['name'])) {
+            $blockIndicators = ['Security Check', 'Access Denied', 'Blocked', 'Sorry!', 'ไม่พบรายการสินค้า'];
+            $isBlocked = false;
+            foreach ($blockIndicators as $indicator) {
+                if (stripos($data['name'], $indicator) !== false) {
+                    $isBlocked = true;
+                    break;
+                }
+            }
+            if (!$isBlocked) {
+                $product->name = $data['name'];
+            }
+        }
+
+        if (!empty($data['price'])) {
+            $product->price = (float) $data['price'];
+        }
+        if (!empty($data['originalPrice'])) {
+            $product->originalPrice = (float) $data['originalPrice'];
+        }
+        if (!empty($data['image'])) {
+            $product->imageUrl = $data['image'];
+        }
+        if (!empty($data['stockStatus'])) {
+            $product->stockStatus = $data['stockStatus'];
+        }
+
+        return $product->name !== null || $product->price !== null;
     }
 
     /**

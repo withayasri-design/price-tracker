@@ -1,0 +1,19 @@
+{
+  "name": "price-tracker-scraper",
+  "version": "1.0.0",
+  "description": "Headless browser scraper for SPA e-commerce sites",
+  "main": "scraper.js",
+  "scripts": {
+    "scrape": "node scraper.js",
+    "test:shopee": "node scraper.js shopee https://shopee.co.th/product/123/456",
+    "test:lazada": "node scraper.js lazada https://www.lazada.co.th/products/test-i123.html"
+  },
+  "dependencies": {
+    "puppeteer": "^23.0.0",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

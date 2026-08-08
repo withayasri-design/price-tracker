@@ -27,6 +27,7 @@ namespace Modules\Scraping\Adapters;
 use Modules\Scraping\BaseAdapter;
 use Modules\Scraping\ScrapedProduct;
 use Modules\Scraping\ScrapingException;
+use Modules\Scraping\HeadlessScraper;
 
 class TikTokShopAdapter extends BaseAdapter
 {
@@ -95,10 +96,15 @@ class TikTokShopAdapter extends BaseAdapter
             $success = $this->tryApiExtraction($product, $productId);
         }
 
+        // Method 3: Try headless browser (Puppeteer)
+        if (!$success || ($product->name === null && $product->price === null)) {
+            $success = $this->tryHeadlessScraping($product, $productId, $url);
+        }
+
         // Validate we got minimum required data
         if (!$success || ($product->name === null && $product->price === null)) {
             throw new ScrapingException(
-                'TikTok Shop requires headless browser. Security verification blocked data extraction.',
+                'TikTok Shop มีระบบป้องกัน Bot ที่เข้มงวด ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณาลองใหม่ภายหลังหรือใช้ร้านค้าอื่น',
                 ScrapingException::ERROR_BLOCKED,
                 $url,
                 403
@@ -107,6 +113,63 @@ class TikTokShopAdapter extends BaseAdapter
 
         $product->calculateDiscount();
         return $product;
+    }
+
+    /**
+     * Try to extract data using headless browser (Puppeteer).
+     */
+    private function tryHeadlessScraping(ScrapedProduct &$product, string $productId, string $url): bool
+    {
+        require_once __DIR__ . '/../HeadlessScraper.php';
+
+        $scraper = new HeadlessScraper();
+
+        if (!$scraper->isAvailable()) {
+            return false;
+        }
+
+        $result = $scraper->scrape('tiktok', $url);
+
+        // Check if blocked by anti-bot
+        if (!empty($result['blocked'])) {
+            return false;
+        }
+
+        if (!$result['success'] || empty($result['data'])) {
+            return false;
+        }
+
+        $data = $result['data'];
+
+        // Skip if name looks like a block page
+        if (!empty($data['name'])) {
+            $blockIndicators = ['Security Check', 'Access Denied', 'Blocked', 'TikTok'];
+            $isBlocked = false;
+            foreach ($blockIndicators as $indicator) {
+                if (stripos($data['name'], $indicator) !== false && strlen($data['name']) < 50) {
+                    $isBlocked = true;
+                    break;
+                }
+            }
+            if (!$isBlocked) {
+                $product->name = $data['name'];
+            }
+        }
+
+        if (!empty($data['price'])) {
+            $product->price = (float) $data['price'];
+        }
+        if (!empty($data['originalPrice'])) {
+            $product->originalPrice = (float) $data['originalPrice'];
+        }
+        if (!empty($data['image'])) {
+            $product->imageUrl = $data['image'];
+        }
+        if (!empty($data['stockStatus'])) {
+            $product->stockStatus = $data['stockStatus'];
+        }
+
+        return $product->name !== null || $product->price !== null;
     }
 
     /**

@@ -120,19 +120,43 @@ $settingGroups = [
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-light">
-    <!-- Navbar -->
+<!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="../dashboard.php">
                 <i class="fas fa-chart-line me-2"></i>Price Tracker
             </a>
-            <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="./master_products.php">Master Products</a>
-                <a class="nav-link" href="./agent_monitor.php">Agents</a>
-                <a class="nav-link active" href="./settings.php">Settings</a>
-                <a class="nav-link" href="../dashboard.php">
-                    <i class="fas fa-arrow-left me-1"></i>Dashboard
-                </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="../dashboard.php"><i class="fas fa-home me-1"></i>Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../products.php"><i class="fas fa-box me-1"></i>สินค้า</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="../compare.php"><i class="fas fa-balance-scale me-1"></i>เปรียบเทียบ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.php"><i class="fas fa-cog me-1"></i>Admin</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield me-1"></i><?= htmlspecialchars(Auth::fullName()) ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="../profile.php"><i class="fas fa-user me-2"></i>โปรไฟล์</a></li>
+                            <li><a class="dropdown-item" href="../line_connect.php"><i class="fab fa-line me-2"></i>เชื่อมต่อ LINE</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>

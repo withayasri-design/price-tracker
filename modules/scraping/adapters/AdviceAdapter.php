@@ -36,14 +36,25 @@ class AdviceAdapter extends BaseAdapter
     public function scrape(string $url): ScrapedProduct
     {
         // Extract product ID from URL
-        // Can be /product/12345 or /product/product-name-12345
-        if (!preg_match('#/product/(?:.*?-)?(\d+)(?:[/?#]|$)#', $url, $matches)) {
-            // Try alternate pattern
-            if (!preg_match('#/product/(\d+)#', $url, $matches)) {
-                throw ScrapingException::parseError($url, 'product_id');
-            }
+        // Can be /product/12345 or /product/product-name-12345 or /product/product-slug
+        $productId = null;
+
+        // Try numeric ID at end: /product/name-12345
+        if (preg_match('~/product/(?:.*?-)(\d+)(?:[/?]|$)~', $url, $matches)) {
+            $productId = $matches[1];
         }
-        $productId = $matches[1];
+        // Try pure numeric: /product/12345
+        elseif (preg_match('~/product/(\d+)(?:[/?]|$)~', $url, $matches)) {
+            $productId = $matches[1];
+        }
+        // Fall back to slug-based ID: /product/product-slug
+        elseif (preg_match('~/product/([a-zA-Z0-9_-]+)~', $url, $matches)) {
+            $productId = $matches[1];
+        }
+
+        if (!$productId) {
+            throw ScrapingException::parseError($url, 'product_id');
+        }
 
         // Fetch page
         $html = $this->fetchHtml($url);
@@ -94,6 +105,14 @@ class AdviceAdapter extends BaseAdapter
             if (!$priceStr) {
                 $priceStr = $this->extractByRegex($html, '/฿\s*([\d,]+(?:\.\d{2})?)/');
             }
+            // Try finding price in data attributes
+            if (!$priceStr) {
+                $priceStr = $this->extractByRegex($html, '/data-price="(\d+(?:\.\d+)?)"/i');
+            }
+            // Try finding price in JSON data
+            if (!$priceStr) {
+                $priceStr = $this->extractByRegex($html, '/"price"\s*:\s*"?(\d+(?:\.\d+)?)"?/i');
+            }
             $product->price = $this->parsePrice($priceStr);
         }
 
@@ -126,8 +145,8 @@ class AdviceAdapter extends BaseAdapter
             }
         }
 
-        // Validate required fields
-        if ($product->price === null) {
+        // Validate - need at least name or price
+        if ($product->name === null && $product->price === null) {
             throw ScrapingException::parseError($url, 'price');
         }
 

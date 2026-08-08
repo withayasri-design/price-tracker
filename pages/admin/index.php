@@ -197,21 +197,31 @@ $platformInfo = [
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="../dashboard.php"><i class="fas fa-home me-1"></i>หน้าหลัก</a>
+                        <a class="nav-link" href="../dashboard.php"><i class="fas fa-home me-1"></i>Dashboard</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="../products.php"><i class="fas fa-box me-1"></i>สินค้า</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="../compare.php"><i class="fas fa-balance-scale me-1"></i>เปรียบเทียบ</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link active" href="index.php"><i class="fas fa-cog me-1"></i>Admin</a>
                     </li>
                 </ul>
-                <div class="navbar-nav">
-                    <span class="nav-link text-light">
-                        <i class="fas fa-user-shield me-1"></i><?= htmlspecialchars(Auth::fullName()) ?>
-                    </span>
-                    <a class="nav-link" href="../logout.php"><i class="fas fa-sign-out-alt me-1"></i>ออกจากระบบ</a>
-                </div>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-shield me-1"></i><?= htmlspecialchars(Auth::fullName()) ?>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="../profile.php"><i class="fas fa-user me-2"></i>โปรไฟล์</a></li>
+                            <li><a class="dropdown-item" href="../line_connect.php"><i class="fab fa-line me-2"></i>เชื่อมต่อ LINE</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item text-danger" href="../logout.php"><i class="fas fa-sign-out-alt me-2"></i>ออกจากระบบ</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </nav>
@@ -464,11 +474,11 @@ $platformInfo = [
                                     <div class="text-end">
                                         <?php if ($event['event_type'] === 'price_drop'): ?>
                                         <span class="text-success fw-bold">
-                                            <i class="fas fa-arrow-down me-1"></i>฿<?= number_format($event['new_price']) ?>
+                                            <i class="fas fa-arrow-down me-1"></i>฿<?= number_format((float) $event['new_price']) ?>
                                         </span>
                                         <?php elseif ($event['event_type'] === 'price_increase'): ?>
                                         <span class="text-danger fw-bold">
-                                            <i class="fas fa-arrow-up me-1"></i>฿<?= number_format($event['new_price']) ?>
+                                            <i class="fas fa-arrow-up me-1"></i>฿<?= number_format((float) $event['new_price']) ?>
                                         </span>
                                         <?php else: ?>
                                         <span class="text-info fw-bold">
